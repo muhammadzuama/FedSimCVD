@@ -8,7 +8,7 @@ This repository contains the proposed aggregation method, model architecture, ba
 
 - [`model.py`](https://github.com/muhammadzuama/FedSimCVD/blob/main/model.py) — Defines the neural network architecture used in the experiments, including the feature extractor and classification head.
 
-- [`baselinefed/fl_basic4.py`](https://github.com/muhammadzuama/FedSimCVD/blob/main/baselinefed/fl_basic4.py) — Implementation of the full-parameter federated learning baseline, in which the entire model is aggregated across participating clients.
+- [`baselinefed/fl_basic4.py`](https://github.com/muhammadzuama/FedSimCVD/blob/main/baselinefed/FullClient10round.ipynb) — Implementation of the full-parameter federated learning baseline, in which the entire model is aggregated across participating clients.
 
 ## Dataset and Preprocessing
 
