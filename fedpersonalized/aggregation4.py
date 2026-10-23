@@ -1,24 +1,3 @@
-"""
-aggregation.py
-================
-Custom Flower (flwr) aggregation strategy: FedCosinePairwise.
-
-Strategi FedAvg custom yang membobotkan kontribusi tiap client
-berdasarkan PAIRWISE cosine similarity antar parameter model
-seluruh client pada ronde tersebut (dihitung sebelum agregasi).
-
-Cara pakai singkat:
-    strategy = build_fedcosine_pairwise_strategy(
-        num_clients=10,
-        init_params=initial_parameters,
-        evaluate_fn=my_evaluate_fn,
-        fit_metrics_agg=my_fit_metrics_agg,
-        temperature=0.1,
-        min_weight=0.0,
-        similarity_agg="mean",  # atau "median"
-    )
-"""
-
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np

@@ -24,6 +24,8 @@ from aggregation4 import FedCosinePairwise         # <-- BARU
 from dataset import prepare_client_data
 from model import build_model
 
+from sklearn.preprocessing import StandardScaler   # kalau belum ada di atas file
+
 ALGOS = ('fedavg', 'fedprox', 'fedavgm',
          'fedadam', 'fedyogi', 'fedadagrad',
          'fedpairwise')                              # <-- BARU
@@ -44,11 +46,41 @@ def get_seed():
 # ============================================================
 @lru_cache(maxsize=1)
 def load_data():
-    """Muat data semua client sekali per proses -> (clients, scaler, feature_names)."""
-    # FL_CLIENT_DIR (diset main.py) menang atas config.py, supaya server dan
-    # worker Ray memakai folder data yang sama.
+    """Muat data client sekali per proses -> (clients, scaler, feature_names).
+    FL_STATES (mis. '5,10,13') membatasi client; kosong = semua state."""
     d = os.environ.get('FL_CLIENT_DIR') or config.CLIENT_DIR
-    return prepare_client_data(Path(d))
+    raw = os.environ.get('FL_STATES', '').strip()
+    wanted = {int(x) for x in raw.split(',') if x} or None
+
+    clients, scaler, names = prepare_client_data(Path(d))
+    if wanted is None:
+        return clients, scaler, names            # perilaku lama, tidak berubah
+
+    hilang = wanted - set(clients)
+    if hilang:
+        print(f"[peringatan] state diminta tapi tidak ada/kosong: {sorted(hilang)}")
+    pilih = [s for s in sorted(wanted) if s in clients]
+    if not pilih:
+        raise ValueError(f"Tidak ada state terpilih yang valid: {sorted(wanted)}")
+
+    # kembalikan ke skala asli (pakai scaler lama), lalu fit ulang hanya dari train state terpilih
+    mean, scale = scaler.mean_, scaler.scale_
+
+    def _unscale(t):
+        return t.numpy().astype(np.float64) * scale + mean
+
+    new_scaler = StandardScaler()
+    for s in pilih:
+        new_scaler.partial_fit(_unscale(clients[s]['X_train_t']))
+
+    out = {}
+    for s in pilih:
+        out[s] = {}
+        for k, v in clients[s].items():
+            if k.startswith('X_'):
+                v = torch.tensor(new_scaler.transform(_unscale(v)), dtype=torch.float32)
+            out[s][k] = v
+    return out, new_scaler, names
 
 
 def load_all():

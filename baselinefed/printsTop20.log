@@ -1,0 +1,330 @@
+[server] algoritma agregasi: fedavg | seed: 42
+[ronde 01] val F1 0.4880 | AUC 0.7407 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4882 | AUC 0.7446 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4883 | AUC 0.7434 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4874 | AUC 0.7412 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4849 | AUC 0.7383 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4815 | AUC 0.7349 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4806 | AUC 0.7315 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4745 | AUC 0.7277 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4686 | AUC 0.7233 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4666 | AUC 0.7207 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedprox | seed: 42
+[ronde 01] val F1 0.4883 | AUC 0.7404 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4891 | AUC 0.7451 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4902 | AUC 0.7443 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4883 | AUC 0.7427 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4855 | AUC 0.7400 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4819 | AUC 0.7368 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4809 | AUC 0.7335 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4780 | AUC 0.7300 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4734 | AUC 0.7259 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4688 | AUC 0.7227 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavgm | seed: 42
+[ronde 01] val F1 0.4880 | AUC 0.7407 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4910 | AUC 0.7458 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4888 | AUC 0.7407 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4284 | AUC 0.6679 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.2340 | AUC 0.3829 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.3375 | AUC 0.5043 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4717 | AUC 0.7222 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4810 | AUC 0.7325 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4579 | AUC 0.7180 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.3857 | AUC 0.6405 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedadam | seed: 42
+[ronde 01] val F1 0.4261 | AUC 0.6877 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4794 | AUC 0.7297 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4845 | AUC 0.7375 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4877 | AUC 0.7398 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4869 | AUC 0.7410 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4854 | AUC 0.7403 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4864 | AUC 0.7371 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4811 | AUC 0.7301 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4699 | AUC 0.7165 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4525 | AUC 0.6969 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedpairwise | seed: 42
+[peringatan] aggregation4.py versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot pairwise: 41=0.062, 23=0.031, 55=0.038, 12=0.019, 50=0.071, 34=0.048, 29=0.051, 39=0.015, 54=0.061, 19=0.037, 33=0.051, 37=0.065, 22=0.062, 10=0.067, 48=0.030, 13=0.036, 30=0.059, 5=0.053, 1=0.072, 16=0.071
+[ronde 01] val F1 0.4852 | AUC 0.7373 | bandwidth ronde 1.590 MB
+[ronde 02] bobot pairwise: 41=0.063, 33=0.053, 10=0.061, 23=0.036, 39=0.023, 5=0.058, 50=0.064, 1=0.062, 37=0.066, 13=0.039, 19=0.038, 12=0.025, 48=0.038, 30=0.059, 16=0.062, 22=0.053, 34=0.055, 54=0.058, 29=0.050, 55=0.038
+[ronde 02] val F1 0.4887 | AUC 0.7444 | bandwidth ronde 1.590 MB
+[ronde 03] bobot pairwise: 55=0.045, 30=0.056, 33=0.050, 5=0.053, 34=0.053, 54=0.058, 48=0.038, 22=0.054, 12=0.027, 19=0.041, 41=0.063, 16=0.057, 50=0.062, 13=0.043, 39=0.025, 29=0.052, 37=0.063, 1=0.061, 10=0.056, 23=0.043
+[ronde 03] val F1 0.4899 | AUC 0.7447 | bandwidth ronde 1.590 MB
+[ronde 04] bobot pairwise: 50=0.059, 29=0.052, 23=0.043, 1=0.060, 39=0.026, 37=0.060, 55=0.043, 10=0.054, 41=0.057, 12=0.031, 34=0.055, 54=0.056, 13=0.046, 48=0.042, 33=0.052, 19=0.044, 16=0.059, 30=0.055, 5=0.053, 22=0.053
+[ronde 04] val F1 0.4886 | AUC 0.7436 | bandwidth ronde 1.590 MB
+[ronde 05] bobot pairwise: 5=0.055, 33=0.049, 39=0.028, 50=0.060, 34=0.055, 19=0.045, 41=0.057, 55=0.044, 29=0.051, 16=0.056, 37=0.060, 12=0.032, 54=0.056, 23=0.044, 22=0.055, 1=0.058, 10=0.055, 13=0.043, 48=0.043, 30=0.054
+[ronde 05] val F1 0.4867 | AUC 0.7420 | bandwidth ronde 1.590 MB
+[ronde 06] bobot pairwise: 37=0.059, 29=0.051, 23=0.044, 10=0.054, 1=0.058, 48=0.045, 41=0.054, 30=0.054, 13=0.044, 50=0.057, 5=0.053, 34=0.057, 55=0.043, 39=0.031, 33=0.051, 22=0.056, 54=0.055, 12=0.034, 16=0.056, 19=0.045
+[ronde 06] val F1 0.4864 | AUC 0.7396 | bandwidth ronde 1.590 MB
+[ronde 07] bobot pairwise: 29=0.051, 23=0.047, 39=0.032, 41=0.056, 1=0.056, 34=0.056, 10=0.052, 54=0.055, 33=0.051, 37=0.057, 13=0.045, 12=0.034, 48=0.048, 50=0.056, 30=0.052, 55=0.046, 22=0.056, 19=0.044, 16=0.053, 5=0.053
+[ronde 07] val F1 0.4841 | AUC 0.7375 | bandwidth ronde 1.590 MB
+[ronde 08] bobot pairwise: 5=0.054, 23=0.047, 16=0.054, 39=0.033, 48=0.049, 19=0.048, 34=0.054, 54=0.053, 10=0.053, 55=0.046, 50=0.055, 22=0.054, 37=0.056, 1=0.054, 13=0.047, 30=0.053, 29=0.052, 33=0.050, 12=0.035, 41=0.054
+[ronde 08] val F1 0.4801 | AUC 0.7349 | bandwidth ronde 1.590 MB
+[ronde 09] bobot pairwise: 1=0.057, 33=0.050, 22=0.053, 54=0.055, 39=0.034, 16=0.054, 50=0.055, 41=0.056, 29=0.054, 23=0.047, 34=0.053, 5=0.052, 48=0.048, 30=0.052, 19=0.048, 12=0.035, 37=0.055, 10=0.050, 13=0.048, 55=0.046
+[ronde 09] val F1 0.4791 | AUC 0.7321 | bandwidth ronde 1.590 MB
+[ronde 10] bobot pairwise: 22=0.053, 12=0.037, 48=0.048, 29=0.055, 30=0.052, 19=0.049, 41=0.054, 50=0.056, 39=0.036, 16=0.054, 34=0.052, 1=0.054, 23=0.046, 13=0.046, 37=0.056, 5=0.052, 55=0.046, 33=0.050, 54=0.054, 10=0.051
+[ronde 10] val F1 0.4772 | AUC 0.7298 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavg | seed: 0
+[ronde 01] val F1 0.4824 | AUC 0.7408 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4896 | AUC 0.7463 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4926 | AUC 0.7461 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4925 | AUC 0.7449 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4939 | AUC 0.7430 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4909 | AUC 0.7402 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4869 | AUC 0.7371 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4866 | AUC 0.7343 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4794 | AUC 0.7314 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4763 | AUC 0.7281 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedprox | seed: 0
+[ronde 01] val F1 0.4820 | AUC 0.7399 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4893 | AUC 0.7464 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4938 | AUC 0.7468 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4935 | AUC 0.7458 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4943 | AUC 0.7440 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4923 | AUC 0.7416 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4903 | AUC 0.7387 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4899 | AUC 0.7358 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4831 | AUC 0.7332 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4815 | AUC 0.7300 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavgm | seed: 0
+[ronde 01] val F1 0.4824 | AUC 0.7408 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4928 | AUC 0.7473 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4898 | AUC 0.7440 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4574 | AUC 0.7029 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.2054 | AUC 0.4509 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.3227 | AUC 0.5832 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4720 | AUC 0.7220 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4654 | AUC 0.7195 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4283 | AUC 0.6960 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.3021 | AUC 0.6018 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedadam | seed: 0
+[ronde 01] val F1 0.4327 | AUC 0.6739 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4718 | AUC 0.7264 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4830 | AUC 0.7376 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4871 | AUC 0.7413 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4887 | AUC 0.7424 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4865 | AUC 0.7420 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4845 | AUC 0.7399 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4852 | AUC 0.7349 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4778 | AUC 0.7257 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4686 | AUC 0.7127 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedpairwise | seed: 0
+[peringatan] aggregation4.py versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot pairwise: 33=0.050, 30=0.057, 37=0.074, 29=0.058, 16=0.067, 5=0.054, 54=0.060, 55=0.041, 13=0.035, 48=0.033, 23=0.033, 19=0.041, 41=0.060, 50=0.067, 39=0.015, 1=0.063, 10=0.062, 34=0.048, 12=0.022, 22=0.061
+[ronde 01] val F1 0.4821 | AUC 0.7374 | bandwidth ronde 1.590 MB
+[ronde 02] bobot pairwise: 29=0.051, 33=0.053, 54=0.063, 5=0.054, 41=0.059, 34=0.056, 16=0.059, 19=0.041, 23=0.040, 48=0.037, 50=0.063, 1=0.059, 30=0.055, 13=0.039, 39=0.023, 12=0.028, 37=0.061, 22=0.059, 10=0.056, 55=0.045
+[ronde 02] val F1 0.4874 | AUC 0.7454 | bandwidth ronde 1.590 MB
+[ronde 03] bobot pairwise: 10=0.056, 48=0.037, 33=0.054, 30=0.055, 41=0.058, 19=0.042, 13=0.040, 22=0.056, 16=0.059, 55=0.045, 29=0.048, 5=0.055, 12=0.030, 1=0.060, 39=0.023, 34=0.060, 37=0.059, 50=0.063, 23=0.040, 54=0.059
+[ronde 03] val F1 0.4920 | AUC 0.7456 | bandwidth ronde 1.590 MB
+[ronde 04] bobot pairwise: 29=0.053, 39=0.029, 54=0.058, 23=0.044, 50=0.060, 30=0.054, 33=0.051, 37=0.060, 12=0.033, 34=0.056, 19=0.043, 13=0.042, 41=0.057, 1=0.056, 55=0.047, 22=0.057, 48=0.039, 16=0.056, 10=0.054, 5=0.052
+[ronde 04] val F1 0.4899 | AUC 0.7448 | bandwidth ronde 1.590 MB
+[ronde 05] bobot pairwise: 41=0.058, 29=0.050, 34=0.057, 55=0.046, 33=0.051, 54=0.058, 10=0.052, 48=0.041, 19=0.046, 23=0.044, 13=0.047, 22=0.054, 5=0.055, 37=0.058, 1=0.053, 12=0.035, 50=0.059, 30=0.053, 39=0.029, 16=0.057
+[ronde 05] val F1 0.4926 | AUC 0.7438 | bandwidth ronde 1.590 MB
+[ronde 06] bobot pairwise: 16=0.058, 41=0.057, 23=0.042, 54=0.055, 37=0.056, 50=0.058, 30=0.054, 1=0.054, 12=0.035, 10=0.053, 39=0.032, 22=0.055, 19=0.044, 33=0.052, 5=0.051, 13=0.043, 55=0.047, 29=0.052, 48=0.045, 34=0.057
+[ronde 06] val F1 0.4926 | AUC 0.7419 | bandwidth ronde 1.590 MB
+[ronde 07] bobot pairwise: 16=0.056, 29=0.051, 30=0.053, 12=0.037, 50=0.058, 41=0.054, 37=0.055, 54=0.056, 19=0.047, 48=0.046, 34=0.056, 1=0.054, 33=0.052, 10=0.050, 23=0.043, 39=0.033, 5=0.052, 55=0.047, 13=0.046, 22=0.054
+[ronde 07] val F1 0.4924 | AUC 0.7402 | bandwidth ronde 1.590 MB
+[ronde 08] bobot pairwise: 34=0.053, 39=0.036, 37=0.056, 33=0.052, 10=0.051, 23=0.043, 12=0.038, 13=0.048, 30=0.053, 19=0.047, 54=0.053, 22=0.055, 5=0.053, 41=0.054, 1=0.054, 16=0.056, 48=0.045, 50=0.057, 29=0.050, 55=0.047
+[ronde 08] val F1 0.4919 | AUC 0.7388 | bandwidth ronde 1.590 MB
+[ronde 09] bobot pairwise: 34=0.055, 33=0.052, 37=0.055, 10=0.052, 41=0.054, 5=0.054, 22=0.055, 39=0.035, 30=0.051, 23=0.044, 12=0.038, 1=0.051, 55=0.049, 13=0.047, 16=0.056, 54=0.053, 50=0.056, 29=0.051, 48=0.046, 19=0.046
+[ronde 09] val F1 0.4885 | AUC 0.7366 | bandwidth ronde 1.590 MB
+[ronde 10] bobot pairwise: 19=0.046, 39=0.036, 1=0.052, 37=0.054, 54=0.052, 41=0.053, 5=0.053, 10=0.051, 33=0.050, 13=0.048, 34=0.055, 55=0.048, 16=0.054, 22=0.053, 23=0.044, 12=0.041, 48=0.050, 30=0.053, 50=0.056, 29=0.051
+[ronde 10] val F1 0.4862 | AUC 0.7336 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavg | seed: 123
+[ronde 01] val F1 0.4877 | AUC 0.7395 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4916 | AUC 0.7449 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4913 | AUC 0.7455 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4939 | AUC 0.7448 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4953 | AUC 0.7440 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4919 | AUC 0.7415 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4863 | AUC 0.7385 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4825 | AUC 0.7359 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4785 | AUC 0.7321 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4737 | AUC 0.7296 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedprox | seed: 123
+[ronde 01] val F1 0.4858 | AUC 0.7383 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4902 | AUC 0.7447 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4909 | AUC 0.7458 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4943 | AUC 0.7454 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4934 | AUC 0.7448 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4942 | AUC 0.7429 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4897 | AUC 0.7403 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4853 | AUC 0.7378 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4812 | AUC 0.7341 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4773 | AUC 0.7317 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavgm | seed: 123
+[ronde 01] val F1 0.4877 | AUC 0.7395 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4949 | AUC 0.7477 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4928 | AUC 0.7457 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4527 | AUC 0.6970 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.3202 | AUC 0.4544 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.3854 | AUC 0.5604 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4730 | AUC 0.7206 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4724 | AUC 0.7297 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4528 | AUC 0.7141 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.3975 | AUC 0.6497 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedadam | seed: 123
+[ronde 01] val F1 0.4381 | AUC 0.6833 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4784 | AUC 0.7300 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4899 | AUC 0.7405 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4930 | AUC 0.7439 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4896 | AUC 0.7451 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4886 | AUC 0.7448 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4883 | AUC 0.7416 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4832 | AUC 0.7346 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4737 | AUC 0.7229 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4570 | AUC 0.7085 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedpairwise | seed: 123
+[peringatan] aggregation4.py versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot pairwise: 54=0.063, 33=0.052, 5=0.054, 16=0.068, 55=0.040, 10=0.067, 41=0.055, 13=0.041, 37=0.070, 29=0.056, 30=0.055, 39=0.020, 34=0.047, 23=0.032, 22=0.061, 48=0.035, 50=0.070, 19=0.035, 12=0.018, 1=0.060
+[ronde 01] val F1 0.4843 | AUC 0.7367 | bandwidth ronde 1.590 MB
+[ronde 02] bobot pairwise: 37=0.067, 10=0.056, 34=0.049, 29=0.050, 12=0.024, 55=0.045, 5=0.059, 16=0.060, 23=0.039, 13=0.045, 41=0.060, 39=0.021, 30=0.054, 54=0.061, 22=0.055, 33=0.052, 19=0.041, 1=0.056, 50=0.062, 48=0.046
+[ronde 02] val F1 0.4901 | AUC 0.7435 | bandwidth ronde 1.590 MB
+[ronde 03] bobot pairwise: 29=0.050, 48=0.044, 23=0.040, 22=0.054, 12=0.030, 30=0.056, 55=0.050, 13=0.046, 19=0.043, 41=0.059, 10=0.053, 5=0.055, 34=0.052, 33=0.052, 54=0.058, 16=0.057, 37=0.061, 50=0.061, 39=0.024, 1=0.055
+[ronde 03] val F1 0.4921 | AUC 0.7444 | bandwidth ronde 1.590 MB
+[ronde 04] bobot pairwise: 37=0.060, 55=0.045, 10=0.051, 23=0.039, 30=0.053, 16=0.055, 41=0.059, 12=0.031, 29=0.051, 48=0.042, 34=0.054, 33=0.054, 39=0.027, 54=0.060, 22=0.056, 19=0.044, 5=0.055, 13=0.050, 50=0.058, 1=0.056
+[ronde 04] val F1 0.4921 | AUC 0.7440 | bandwidth ronde 1.590 MB
+[ronde 05] bobot pairwise: 50=0.057, 30=0.055, 16=0.054, 19=0.044, 34=0.052, 10=0.052, 54=0.058, 37=0.059, 55=0.045, 12=0.034, 22=0.052, 29=0.053, 33=0.052, 5=0.056, 23=0.040, 41=0.057, 1=0.055, 48=0.045, 13=0.050, 39=0.029
+[ronde 05] val F1 0.4906 | AUC 0.7438 | bandwidth ronde 1.590 MB
+[ronde 06] bobot pairwise: 29=0.054, 10=0.052, 33=0.049, 39=0.030, 16=0.052, 5=0.054, 30=0.054, 19=0.046, 22=0.052, 48=0.046, 34=0.051, 54=0.058, 50=0.056, 55=0.049, 23=0.042, 1=0.054, 13=0.048, 41=0.056, 12=0.036, 37=0.059
+[ronde 06] val F1 0.4907 | AUC 0.7420 | bandwidth ronde 1.590 MB
+[ronde 07] bobot pairwise: 12=0.036, 22=0.053, 48=0.046, 41=0.056, 29=0.053, 5=0.056, 50=0.054, 34=0.053, 54=0.057, 39=0.032, 30=0.054, 33=0.052, 19=0.044, 1=0.052, 23=0.043, 37=0.056, 13=0.053, 55=0.048, 10=0.051, 16=0.053
+[ronde 07] val F1 0.4888 | AUC 0.7409 | bandwidth ronde 1.590 MB
+[ronde 08] bobot pairwise: 16=0.053, 23=0.043, 1=0.053, 34=0.053, 12=0.037, 30=0.056, 50=0.055, 22=0.052, 19=0.045, 48=0.048, 33=0.052, 10=0.051, 39=0.034, 41=0.055, 55=0.048, 37=0.056, 29=0.051, 13=0.050, 5=0.053, 54=0.055
+[ronde 08] val F1 0.4860 | AUC 0.7391 | bandwidth ronde 1.590 MB
+[ronde 09] bobot pairwise: 10=0.052, 23=0.045, 34=0.055, 29=0.053, 12=0.038, 39=0.034, 30=0.054, 33=0.049, 37=0.054, 1=0.053, 48=0.047, 16=0.052, 50=0.055, 22=0.051, 41=0.055, 19=0.047, 13=0.051, 55=0.050, 5=0.052, 54=0.054
+[ronde 09] val F1 0.4838 | AUC 0.7364 | bandwidth ronde 1.590 MB
+[ronde 10] bobot pairwise: 29=0.052, 5=0.053, 19=0.047, 34=0.053, 55=0.050, 54=0.053, 10=0.051, 12=0.037, 13=0.051, 41=0.053, 16=0.052, 48=0.049, 22=0.053, 33=0.050, 1=0.053, 37=0.054, 50=0.053, 23=0.046, 39=0.035, 30=0.054
+[ronde 10] val F1 0.4796 | AUC 0.7344 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavg | seed: 1337
+[ronde 01] val F1 0.4790 | AUC 0.7329 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4845 | AUC 0.7406 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4866 | AUC 0.7417 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4852 | AUC 0.7404 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4855 | AUC 0.7390 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4834 | AUC 0.7359 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4776 | AUC 0.7327 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4726 | AUC 0.7282 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4697 | AUC 0.7260 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4672 | AUC 0.7224 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedprox | seed: 1337
+[ronde 01] val F1 0.4771 | AUC 0.7318 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4858 | AUC 0.7405 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4858 | AUC 0.7418 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4859 | AUC 0.7409 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4887 | AUC 0.7397 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4825 | AUC 0.7370 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4789 | AUC 0.7340 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4739 | AUC 0.7300 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4708 | AUC 0.7280 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4688 | AUC 0.7244 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavgm | seed: 1337
+[ronde 01] val F1 0.4790 | AUC 0.7329 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4883 | AUC 0.7453 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4891 | AUC 0.7438 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4485 | AUC 0.6971 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.2706 | AUC 0.4378 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.3508 | AUC 0.5756 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4668 | AUC 0.7189 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4702 | AUC 0.7271 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4543 | AUC 0.7064 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.3678 | AUC 0.6129 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedadam | seed: 1337
+[ronde 01] val F1 0.4237 | AUC 0.6725 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4654 | AUC 0.7176 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4778 | AUC 0.7299 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4838 | AUC 0.7356 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4865 | AUC 0.7391 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4850 | AUC 0.7403 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4883 | AUC 0.7388 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4859 | AUC 0.7336 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4753 | AUC 0.7230 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4577 | AUC 0.7078 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedpairwise | seed: 1337
+[peringatan] aggregation4.py versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot pairwise: 33=0.047, 22=0.054, 39=0.015, 37=0.072, 1=0.064, 19=0.038, 16=0.073, 29=0.051, 5=0.051, 41=0.062, 13=0.035, 50=0.068, 12=0.019, 30=0.063, 55=0.040, 48=0.035, 54=0.067, 34=0.049, 10=0.067, 23=0.030
+[ronde 01] val F1 0.4745 | AUC 0.7279 | bandwidth ronde 1.590 MB
+[ronde 02] bobot pairwise: 16=0.066, 50=0.057, 22=0.052, 39=0.025, 34=0.051, 30=0.061, 1=0.057, 48=0.039, 23=0.042, 10=0.060, 54=0.063, 19=0.038, 41=0.062, 12=0.024, 5=0.056, 37=0.060, 33=0.051, 29=0.052, 55=0.044, 13=0.039
+[ronde 02] val F1 0.4825 | AUC 0.7387 | bandwidth ronde 1.590 MB
+[ronde 03] bobot pairwise: 34=0.051, 54=0.061, 1=0.057, 5=0.058, 16=0.067, 13=0.042, 39=0.028, 41=0.058, 33=0.049, 19=0.043, 22=0.054, 55=0.046, 29=0.050, 10=0.053, 30=0.056, 48=0.046, 23=0.041, 37=0.060, 50=0.055, 12=0.026
+[ronde 03] val F1 0.4858 | AUC 0.7410 | bandwidth ronde 1.590 MB
+[ronde 04] bobot pairwise: 5=0.059, 12=0.029, 50=0.055, 54=0.058, 34=0.055, 37=0.058, 1=0.056, 30=0.057, 41=0.056, 13=0.043, 16=0.061, 33=0.053, 48=0.048, 29=0.054, 39=0.029, 22=0.052, 10=0.054, 55=0.043, 23=0.040, 19=0.040
+[ronde 04] val F1 0.4884 | AUC 0.7411 | bandwidth ronde 1.590 MB
+[ronde 05] bobot pairwise: 34=0.050, 37=0.058, 16=0.057, 33=0.050, 41=0.055, 13=0.044, 29=0.052, 48=0.044, 23=0.045, 19=0.042, 10=0.054, 5=0.055, 39=0.032, 55=0.050, 12=0.031, 22=0.053, 54=0.059, 1=0.057, 30=0.058, 50=0.056
+[ronde 05] val F1 0.4863 | AUC 0.7405 | bandwidth ronde 1.590 MB
+[ronde 06] bobot pairwise: 34=0.050, 41=0.055, 33=0.052, 50=0.052, 12=0.034, 29=0.051, 54=0.053, 1=0.054, 5=0.054, 19=0.042, 39=0.035, 22=0.053, 37=0.059, 30=0.056, 55=0.045, 10=0.058, 48=0.049, 23=0.043, 13=0.045, 16=0.059
+[ronde 06] val F1 0.4842 | AUC 0.7393 | bandwidth ronde 1.590 MB
+[ronde 07] bobot pairwise: 55=0.049, 10=0.054, 13=0.048, 23=0.046, 33=0.050, 22=0.052, 29=0.051, 37=0.058, 48=0.048, 16=0.055, 30=0.054, 50=0.052, 5=0.053, 19=0.043, 54=0.055, 34=0.051, 12=0.036, 39=0.034, 1=0.056, 41=0.054
+[ronde 07] val F1 0.4826 | AUC 0.7370 | bandwidth ronde 1.590 MB
+[ronde 08] bobot pairwise: 54=0.054, 55=0.046, 23=0.047, 34=0.052, 5=0.052, 10=0.053, 13=0.047, 1=0.054, 29=0.052, 50=0.052, 33=0.051, 19=0.044, 37=0.056, 22=0.052, 48=0.047, 39=0.037, 41=0.055, 30=0.056, 12=0.036, 16=0.056
+[ronde 08] val F1 0.4753 | AUC 0.7341 | bandwidth ronde 1.590 MB
+[ronde 09] bobot pairwise: 37=0.055, 22=0.053, 41=0.054, 23=0.049, 29=0.049, 10=0.052, 48=0.049, 1=0.054, 54=0.051, 19=0.045, 12=0.037, 33=0.052, 39=0.038, 30=0.058, 16=0.053, 55=0.048, 13=0.048, 34=0.051, 50=0.053, 5=0.052
+[ronde 09] val F1 0.4718 | AUC 0.7324 | bandwidth ronde 1.590 MB
+[ronde 10] bobot pairwise: 48=0.053, 39=0.038, 33=0.049, 19=0.046, 1=0.053, 16=0.055, 37=0.057, 34=0.048, 23=0.046, 10=0.051, 29=0.051, 55=0.046, 5=0.053, 12=0.037, 13=0.049, 22=0.052, 30=0.054, 54=0.053, 41=0.054, 50=0.054
+[ronde 10] val F1 0.4694 | AUC 0.7292 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavg | seed: 3407
+[ronde 01] val F1 0.4867 | AUC 0.7391 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4900 | AUC 0.7436 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4913 | AUC 0.7440 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4911 | AUC 0.7434 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4904 | AUC 0.7422 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4880 | AUC 0.7401 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4863 | AUC 0.7380 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4825 | AUC 0.7360 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4789 | AUC 0.7326 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4750 | AUC 0.7291 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedprox | seed: 3407
+[ronde 01] val F1 0.4877 | AUC 0.7385 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4913 | AUC 0.7436 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4898 | AUC 0.7443 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4898 | AUC 0.7438 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4893 | AUC 0.7428 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4881 | AUC 0.7410 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4880 | AUC 0.7391 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4857 | AUC 0.7372 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4810 | AUC 0.7340 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4778 | AUC 0.7307 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedavgm | seed: 3407
+[ronde 01] val F1 0.4867 | AUC 0.7391 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4909 | AUC 0.7448 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4884 | AUC 0.7427 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4433 | AUC 0.6764 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.3097 | AUC 0.4092 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.3766 | AUC 0.5649 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4769 | AUC 0.7294 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4536 | AUC 0.7252 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.3864 | AUC 0.6930 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.2970 | AUC 0.5682 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedadam | seed: 3407
+[ronde 01] val F1 0.4066 | AUC 0.7010 | bandwidth ronde 1.590 MB
+[ronde 02] val F1 0.4752 | AUC 0.7307 | bandwidth ronde 1.590 MB
+[ronde 03] val F1 0.4857 | AUC 0.7369 | bandwidth ronde 1.590 MB
+[ronde 04] val F1 0.4903 | AUC 0.7395 | bandwidth ronde 1.590 MB
+[ronde 05] val F1 0.4890 | AUC 0.7414 | bandwidth ronde 1.590 MB
+[ronde 06] val F1 0.4838 | AUC 0.7422 | bandwidth ronde 1.590 MB
+[ronde 07] val F1 0.4893 | AUC 0.7410 | bandwidth ronde 1.590 MB
+[ronde 08] val F1 0.4835 | AUC 0.7354 | bandwidth ronde 1.590 MB
+[ronde 09] val F1 0.4711 | AUC 0.7236 | bandwidth ronde 1.590 MB
+[ronde 10] val F1 0.4592 | AUC 0.7062 | bandwidth ronde 1.590 MB
+[server] algoritma agregasi: fedpairwise | seed: 3407
+[peringatan] aggregation4.py versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot pairwise: 37=0.075, 33=0.054, 30=0.060, 34=0.053, 13=0.034, 10=0.070, 48=0.032, 5=0.050, 29=0.048, 1=0.070, 22=0.063, 23=0.032, 12=0.016, 19=0.035, 39=0.016, 41=0.065, 54=0.059, 55=0.035, 16=0.059, 50=0.075
+[ronde 01] val F1 0.4830 | AUC 0.7345 | bandwidth ronde 1.590 MB
+[ronde 02] bobot pairwise: 30=0.056, 33=0.053, 13=0.042, 48=0.039, 12=0.025, 23=0.040, 5=0.053, 54=0.056, 1=0.061, 39=0.023, 34=0.052, 10=0.062, 50=0.061, 37=0.065, 29=0.053, 22=0.057, 16=0.061, 55=0.040, 19=0.041, 41=0.060
+[ronde 02] val F1 0.4890 | AUC 0.7415 | bandwidth ronde 1.590 MB
+[ronde 03] bobot pairwise: 19=0.039, 13=0.044, 22=0.057, 39=0.028, 29=0.053, 48=0.040, 34=0.052, 1=0.058, 5=0.057, 41=0.060, 55=0.042, 10=0.057, 54=0.056, 30=0.058, 16=0.055, 37=0.061, 12=0.029, 23=0.042, 33=0.051, 50=0.061
+[ronde 03] val F1 0.4905 | AUC 0.7429 | bandwidth ronde 1.590 MB
+[ronde 04] bobot pairwise: 13=0.045, 37=0.061, 50=0.058, 29=0.052, 41=0.061, 12=0.028, 54=0.055, 55=0.047, 10=0.056, 34=0.052, 16=0.054, 5=0.055, 33=0.052, 39=0.027, 30=0.056, 22=0.053, 1=0.057, 19=0.042, 23=0.044, 48=0.046
+[ronde 04] val F1 0.4907 | AUC 0.7426 | bandwidth ronde 1.590 MB
+[ronde 05] bobot pairwise: 19=0.043, 41=0.056, 55=0.044, 16=0.053, 10=0.055, 22=0.055, 33=0.050, 50=0.058, 30=0.056, 48=0.042, 34=0.054, 13=0.048, 23=0.043, 54=0.057, 37=0.058, 5=0.055, 1=0.058, 39=0.028, 12=0.033, 29=0.052
+[ronde 05] val F1 0.4916 | AUC 0.7422 | bandwidth ronde 1.590 MB
+[ronde 06] bobot pairwise: 19=0.043, 33=0.052, 34=0.051, 41=0.057, 16=0.052, 23=0.046, 37=0.057, 1=0.057, 13=0.051, 48=0.045, 29=0.050, 5=0.055, 12=0.032, 50=0.058, 39=0.030, 22=0.052, 55=0.047, 54=0.054, 10=0.056, 30=0.056
+[ronde 06] val F1 0.4873 | AUC 0.7409 | bandwidth ronde 1.590 MB
+[ronde 07] bobot pairwise: 55=0.047, 22=0.054, 50=0.057, 10=0.055, 54=0.055, 30=0.056, 12=0.034, 34=0.052, 16=0.054, 37=0.055, 5=0.054, 13=0.046, 19=0.044, 1=0.056, 48=0.043, 39=0.033, 29=0.049, 23=0.045, 33=0.053, 41=0.058
+[ronde 07] val F1 0.4839 | AUC 0.7398 | bandwidth ronde 1.590 MB
+[ronde 08] bobot pairwise: 33=0.052, 23=0.045, 22=0.052, 12=0.035, 10=0.054, 55=0.048, 30=0.055, 19=0.045, 48=0.045, 54=0.055, 29=0.051, 5=0.051, 13=0.050, 34=0.055, 50=0.055, 39=0.033, 16=0.053, 37=0.056, 1=0.053, 41=0.055
+[ronde 08] val F1 0.4826 | AUC 0.7384 | bandwidth ronde 1.590 MB
+[ronde 09] bobot pairwise: 39=0.034, 37=0.054, 30=0.056, 10=0.053, 12=0.037, 50=0.055, 48=0.046, 19=0.047, 16=0.052, 54=0.054, 23=0.046, 29=0.051, 34=0.054, 13=0.049, 1=0.056, 22=0.052, 5=0.054, 41=0.055, 55=0.046, 33=0.051
+[ronde 09] val F1 0.4813 | AUC 0.7360 | bandwidth ronde 1.590 MB
+[ronde 10] bobot pairwise: 5=0.053, 39=0.037, 41=0.055, 23=0.047, 16=0.051, 55=0.047, 1=0.054, 29=0.048, 19=0.046, 54=0.055, 50=0.054, 37=0.055, 12=0.038, 33=0.052, 34=0.054, 13=0.052, 22=0.050, 48=0.045, 30=0.056, 10=0.052
+[ronde 10] val F1 0.4772 | AUC 0.7340 | bandwidth ronde 1.590 MB
