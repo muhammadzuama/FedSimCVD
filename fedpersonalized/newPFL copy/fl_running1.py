@@ -1,0 +1,1516 @@
+"""
+fl_runner_plain.py  (tanpa adapter, SATU mekanisme training, evaluasi VALIDASI & TEST)
+
+Federated learning dengan model terpisah:
+    theta (dibagi ke server) -> phi (lokal)
+
+Semua client harus punya jumlah fitur yang sama (tidak ada adapter).
+
+Mekanisme training (menggantikan FedSim/FedAlt):
+    train_local = Adam pada SEMUA parameter (theta + phi) sekaligus,
+    CrossEntropy (+ class weight opsional) + suku proximal FedProx pada theta
+    bila mu > 0. Tidak ada lagi mode "sim"/"alt".
+
+aggregation : "fedavg" | "fedprox" | "pairwise"
+
+Metrik (tidak berubah): accuracy, precision, recall, f1, auc (AUC-ROC),
+ap (Average Precision = PR-AUC), plus kurva ROC/PR dan threshold sweep.
+
+Evaluasi:
+    - Per ronde  : validasi (threshold tetap) -> dipakai memilih ronde terbaik.
+    - Akhir      : validasi DAN test, pada ronde TERAKHIR dan ronde TERBAIK:
+        prefix history   arti
+        "val_last"       validasi, ronde terakhir
+        "val_best"       validasi, ronde terbaik
+        "test"           test, ronde terakhir
+        "test_best"      test, ronde terbaik
+      Tiap prefix punya: <prefix>, <prefix>_loss, <prefix>_per_client,
+      <prefix>_curves, <prefix>_sweep, <prefix>_thresholds.
+    - Threshold (mode per_client/global) dipilih dari VALIDASI. Metrik validasi
+      akhir memakai threshold yang dituning pada validasi itu sendiri
+      (in-sample, optimistis) -> bandingkan dengan test untuk melihat gap.
+"""
+import csv
+import os
+import random
+import shutil
+import tempfile
+import warnings
+from collections import OrderedDict
+from typing import Callable, Dict, List, Optional
+
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+from sklearn.metrics import (average_precision_score, f1_score,
+                             precision_recall_curve, precision_score,
+                             recall_score, roc_auc_score, roc_curve)
+from sklearn.preprocessing import label_binarize
+from torch.utils.data import DataLoader, TensorDataset
+
+from flwr.client import Client, ClientApp, NumPyClient
+from flwr.common import Context, NDArrays, ndarrays_to_parameters, parameters_to_ndarrays
+from flwr.server import ServerApp, ServerAppComponents, ServerConfig
+from flwr.server.strategy import FedAvg
+from flwr.simulation import run_simulation
+
+from model import build_model
+
+DEVICE = torch.device("cpu")
+
+MB = 1024 ** 2
+METRIC_KEYS = ("accuracy", "precision", "recall", "f1", "auc", "ap")
+VALID_AGGS = ("fedavg", "fedprox", "pairwise")
+VALID_THR_MODES = ("fixed", "per_client", "global")
+VALID_THR_CRITERIA = ("f1", "youden", "gmean", "sens_target")
+VALID_EVAL_SPLITS = ("val", "test")
+POOLED = "__POOLED__"          # kunci kurva/sweep gabungan semua client
+MAX_CURVE_POINTS = 200
+
+# (prefix history, judul laporan)
+REPORT_SECTIONS = (
+    ("val_last", "VALIDASI (ronde terakhir)"),
+    ("val_best", "VALIDASI (ronde terbaik)"),
+    ("test", "TEST (ronde terakhir)"),
+    ("test_best", "TEST (ronde terbaik)"),
+)
+
+
+def set_seed(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+
+def eval_prefix(split: str, best: bool) -> str:
+    """Nama prefix history untuk hasil evaluasi akhir."""
+    if split == "test":
+        return "test_best" if best else "test"
+    return "val_best" if best else "val_last"
+
+
+# -----------------------------------------------------------------------------
+# Wrapper: theta (dibagi) -> phi (lokal)
+# -----------------------------------------------------------------------------
+class ClientModel(nn.Module):
+    def __init__(self, n_features: int, n_classes: int):
+        super().__init__()
+        self.base = build_model(n_features, n_classes)  # punya .theta dan .phi
+        if not hasattr(self.base, "theta") or not hasattr(self.base, "phi"):
+            raise AttributeError(
+                "build_model(...) harus mengembalikan model dengan atribut "
+                "`.theta` (FeatureExtractor) dan `.phi` (ClassifierHead)."
+            )
+
+    @property
+    def theta(self) -> nn.Module:
+        return self.base.theta
+
+    @property
+    def phi(self) -> nn.Module:
+        return self.base.phi
+
+    def forward(self, x):
+        return self.phi(self.theta(x))
+
+
+# -----------------------------------------------------------------------------
+# Utilitas parameter (hanya THETA yang dipertukarkan)
+# -----------------------------------------------------------------------------
+def get_theta_params(model: ClientModel) -> NDArrays:
+    return [v.detach().cpu().numpy() for v in model.theta.state_dict().values()]
+
+
+def set_theta_params(model: ClientModel, params: NDArrays) -> None:
+    keys = model.theta.state_dict().keys()
+    state = OrderedDict({k: torch.tensor(v) for k, v in zip(keys, params)})
+    model.theta.load_state_dict(state, strict=True)
+
+
+def theta_param_only(model: ClientModel, params: NDArrays) -> List[torch.Tensor]:
+    """
+    Ambil dari `params` (urutan state_dict) hanya entri yang merupakan
+    nn.Parameter (buang buffer BatchNorm), supaya cocok berpasangan dengan
+    model.theta.parameters() pada suku proximal.
+    """
+    pnames = {n for n, _ in model.theta.named_parameters()}
+    names = list(model.theta.state_dict().keys())
+    return [torch.tensor(p).to(DEVICE) for n, p in zip(names, params)
+            if n in pnames]
+
+
+def params_nbytes(params: NDArrays) -> int:
+    return int(sum(np.asarray(p).nbytes for p in params))
+
+
+def full_model_nbytes(model: nn.Module) -> int:
+    """Ukuran SELURUH model (theta + phi) dalam byte."""
+    return int(sum(v.numel() * v.element_size() for v in model.state_dict().values()))
+
+
+def to_tensors(X, y):
+    if torch.is_tensor(X):
+        X = X.detach().cpu().numpy()
+    if torch.is_tensor(y):
+        y = y.detach().cpu().numpy()
+    return (torch.as_tensor(np.asarray(X), dtype=torch.float32),
+            torch.as_tensor(np.asarray(y), dtype=torch.long))
+
+
+def make_loader(X: torch.Tensor, y: torch.Tensor, batch_size: int,
+                generator: torch.Generator) -> DataLoader:
+    """DataLoader acak; buang batch terakhir bila hanya 1 sampel (BatchNorm error)."""
+    drop_last = len(X) > batch_size and len(X) % batch_size == 1
+    return DataLoader(TensorDataset(X, y), batch_size=batch_size, shuffle=True,
+                      generator=generator, drop_last=drop_last)
+
+
+def compute_class_weight(y: torch.Tensor, n_classes: int,
+                         power: float = 0.5) -> Optional[torch.Tensor]:
+    if power <= 0:
+        return None
+    counts = torch.bincount(y, minlength=n_classes).float()
+    present = counts > 0
+    if present.sum() < 2:
+        return None
+    w = torch.ones(n_classes)
+    w[present] = (counts[present].sum() / (present.sum() * counts[present])) ** power
+    w = w / ((w * counts).sum() / counts.sum())
+    return w
+
+
+def _nanmean(vals) -> float:
+    arr = np.asarray(list(vals), dtype=float)
+    if arr.size == 0 or np.all(np.isnan(arr)):
+        return float("nan")
+    return float(np.nanmean(arr))
+
+
+# -----------------------------------------------------------------------------
+# Penyimpanan bagian LOKAL (phi) per client
+# -----------------------------------------------------------------------------
+def local_path(local_dir: str, cid: int) -> str:
+    return os.path.join(local_dir, f"local_client_{cid}.pt")
+
+
+def save_local(model: ClientModel, local_dir: str, cid: int,
+               fit_count: int = 0) -> None:
+    torch.save({
+        "phi": {k: v.cpu() for k, v in model.phi.state_dict().items()},
+        "fit_count": int(fit_count),
+    }, local_path(local_dir, cid))
+
+
+def read_fit_count(local_dir: str, cid: int) -> int:
+    p = local_path(local_dir, cid)
+    if os.path.exists(p):
+        return int(torch.load(p, map_location="cpu", weights_only=True)
+                   .get("fit_count", 0))
+    return 0
+
+
+def load_local_if_exists(model: ClientModel, local_dir: str, cid: int) -> bool:
+    p = local_path(local_dir, cid)
+    if os.path.exists(p):
+        blob = torch.load(p, map_location="cpu", weights_only=True)
+        model.phi.load_state_dict(blob["phi"])
+        return True
+    return False
+
+
+# -----------------------------------------------------------------------------
+# Train: SATU mekanisme (theta + phi dilatih bersamaan).
+# proximal_mu > 0 => suku FedProx pada theta.
+# -----------------------------------------------------------------------------
+def train_local(model, loader, epochs, lr, proximal_mu=0.0, global_theta=None,
+                class_weight=None):
+    model.train()
+    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    cw = class_weight.to(DEVICE) if class_weight is not None else None
+    crit = nn.CrossEntropyLoss(weight=cw)
+    for _ in range(epochs):
+        for xb, yb in loader:
+            xb, yb = xb.to(DEVICE), yb.to(DEVICE)
+            opt.zero_grad()
+            loss = crit(model(xb), yb)
+            if proximal_mu > 0 and global_theta is not None:  # FedProx (theta saja)
+                prox = sum(((p - g) ** 2).sum()
+                           for p, g in zip(model.theta.parameters(), global_theta))
+                loss = loss + (proximal_mu / 2) * prox
+            loss.backward()
+            opt.step()
+
+
+def finetune_local_head(model, X, y, epochs, lr, batch_size, seed):
+    """Fine-tune phi di atas theta global (theta beku). Tidak disimpan."""
+    X, y = to_tensors(X, y)
+    for p in model.theta.parameters():
+        p.requires_grad_(False)
+    model.train()
+    model.theta.eval()  # jangan update running stats BatchNorm
+    opt = torch.optim.Adam(list(model.phi.parameters()), lr=lr)
+    crit = nn.CrossEntropyLoss()
+    g = torch.Generator().manual_seed(seed)
+    loader = make_loader(X, y, batch_size, g)
+    for _ in range(epochs):
+        for xb, yb in loader:
+            opt.zero_grad()
+            crit(model(xb.to(DEVICE)), yb.to(DEVICE)).backward()
+            opt.step()
+
+
+# -----------------------------------------------------------------------------
+# Agregasi FedAvg (theta saja) -- dipakai juga untuk FedProx
+# -----------------------------------------------------------------------------
+class FedAvgTheta(FedAvg):
+    def aggregate_fit(self, server_round, results, failures):
+        if not results:
+            return None, {}
+        if not self.accept_failures and failures:
+            return None, {}
+
+        entries = [(parameters_to_ndarrays(fr.parameters), fr.num_examples)
+                   for _, fr in results]
+        total = float(sum(n for _, n in entries))
+
+        aggregated = []
+        for k in range(len(entries[0][0])):
+            ref = entries[0][0][k]
+            acc = sum((n / total) * p[k].astype(np.float64) for p, n in entries)
+            if np.issubdtype(ref.dtype, np.integer):
+                acc = np.rint(acc)
+            aggregated.append(acc.astype(ref.dtype))
+
+        metrics = {}
+        if self.fit_metrics_aggregation_fn:
+            metrics = self.fit_metrics_aggregation_fn(
+                [(fr.num_examples, fr.metrics) for _, fr in results])
+        return ndarrays_to_parameters(aggregated), metrics
+
+
+# -----------------------------------------------------------------------------
+# Metrik skalar: AUC-ROC & Average Precision (AP = PR-AUC)
+# -----------------------------------------------------------------------------
+def _safe_auc(yt: np.ndarray, probs: np.ndarray, n_classes: int) -> float:
+    """AUC-ROC. Biner: pakai prob kelas 1. Multikelas: OvR macro."""
+    try:
+        if n_classes <= 2:
+            if len(np.unique(yt)) < 2:
+                return float("nan")
+            return float(roc_auc_score(yt, probs[:, 1]))
+        if len(np.unique(yt)) < n_classes:
+            return float("nan")
+        return float(roc_auc_score(yt, probs, multi_class="ovr", average="macro",
+                                   labels=list(range(n_classes))))
+    except ValueError:
+        return float("nan")
+
+
+def _safe_ap(yt: np.ndarray, probs: np.ndarray, n_classes: int) -> float:
+    """
+    Average Precision (= luas Precision-Recall curve).
+    Biner: AP kelas positif (1). Multikelas: macro-AP one-vs-rest atas kelas
+    yang muncul di yt. NaN bila AP tidak terdefinisi (kelas tunggal).
+    """
+    try:
+        if n_classes <= 2:
+            if len(np.unique(yt)) < 2:
+                return float("nan")
+            return float(average_precision_score(yt, probs[:, 1]))
+        present = [c for c in range(n_classes) if (yt == c).any()]
+        if len(present) < 2:
+            return float("nan")
+        Y = label_binarize(yt, classes=list(range(n_classes)))
+        return float(np.mean([average_precision_score(Y[:, c], probs[:, c])
+                              for c in present]))
+    except ValueError:
+        return float("nan")
+
+
+# -----------------------------------------------------------------------------
+# Kurva diagnostik (ROC & PR) + threshold sweep + pemilihan threshold
+# -----------------------------------------------------------------------------
+def _downsample(x: np.ndarray, y: np.ndarray, k: int = MAX_CURVE_POINTS):
+    """Kurangi jumlah titik kurva (pasangan x,y tetap sejajar)."""
+    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
+    if len(x) <= k:
+        return x.tolist(), y.tolist()
+    idx = np.unique(np.linspace(0, len(x) - 1, k).astype(int))
+    return x[idx].tolist(), y[idx].tolist()
+
+
+def compute_curves(yt: np.ndarray, p1: np.ndarray) -> Optional[dict]:
+    """Kurva ROC dan Precision-Recall (biner). None bila kelas tunggal."""
+    yt, p1 = np.asarray(yt), np.asarray(p1)
+    if len(np.unique(yt)) < 2:
+        return None
+    fpr, tpr, _ = roc_curve(yt, p1)
+    prec, rec, _ = precision_recall_curve(yt, p1)
+    fpr_d, tpr_d = _downsample(fpr, tpr)
+    rec_d, prec_d = _downsample(rec, prec)
+    return {
+        "fpr": fpr_d, "tpr": tpr_d,
+        "recall": rec_d, "precision": prec_d,
+        "auc": float(roc_auc_score(yt, p1)),
+        "ap": float(average_precision_score(yt, p1)),
+        "prevalence": float((yt == 1).mean()),
+        "n": int(len(yt)),
+    }
+
+
+def threshold_sweep(yt: np.ndarray, p1: np.ndarray,
+                    thresholds=None) -> List[dict]:
+    """Metrik operasi pada grid threshold (biner, kelas positif = 1)."""
+    if thresholds is None:
+        thresholds = np.linspace(0.05, 0.95, 19)
+    yt, p1 = np.asarray(yt), np.asarray(p1)
+    P, N = (yt == 1), (yt != 1)
+    rows = []
+    for t in thresholds:
+        pred = p1 >= t
+        tp = int((pred & P).sum())
+        fp = int((pred & N).sum())
+        fn = int((~pred & P).sum())
+        tn = int((~pred & N).sum())
+        prec = tp / (tp + fp) if (tp + fp) > 0 else float("nan")
+        rec = tp / (tp + fn) if (tp + fn) > 0 else float("nan")
+        spec = tn / (tn + fp) if (tn + fp) > 0 else float("nan")
+        den = 2 * tp + fp + fn
+        f1 = (2 * tp / den) if den > 0 else 0.0
+        youden = (rec + spec - 1.0) if not (np.isnan(rec) or np.isnan(spec)) \
+            else float("nan")
+        rows.append({"threshold": float(t), "precision": prec, "recall": rec,
+                     "specificity": spec, "f1": f1, "youden": youden,
+                     "pos_pred_rate": float(pred.mean())})
+    return rows
+
+
+def select_threshold(yt: np.ndarray, p1: np.ndarray, criterion: str = "f1",
+                     target_sensitivity: float = 0.9,
+                     default: float = 0.5) -> float:
+    """
+    Pilih threshold optimal dari data (dipanggil pada VALIDASI).
+      f1          : maksimalkan F1 (dari PR curve)
+      youden      : maksimalkan sensitivitas + spesifisitas - 1 (dari ROC)
+      gmean       : maksimalkan sqrt(sensitivitas * spesifisitas)
+      sens_target : threshold tertinggi dengan sensitivitas >= target_sensitivity
+    Bila data hanya punya satu kelas, kembalikan `default`.
+    """
+    yt, p1 = np.asarray(yt), np.asarray(p1)
+    if len(np.unique(yt)) < 2:
+        return float(default)
+    if criterion == "f1":
+        prec, rec, thr = precision_recall_curve(yt, p1)
+        f1 = 2 * prec[:-1] * rec[:-1] / np.maximum(prec[:-1] + rec[:-1], 1e-12)
+        return float(thr[int(np.argmax(f1))])
+    fpr, tpr, thr = roc_curve(yt, p1)
+    thr = np.where(np.isfinite(thr), thr, 1.0)   # titik awal ROC bisa inf
+    if criterion == "youden":
+        idx = int(np.argmax(tpr - fpr))
+    elif criterion == "gmean":
+        idx = int(np.argmax(np.sqrt(tpr * (1.0 - fpr))))
+    elif criterion == "sens_target":
+        idx = int(np.argmax(tpr >= target_sensitivity))
+    else:
+        raise ValueError(f"criterion harus salah satu dari {VALID_THR_CRITERIA}")
+    return float(np.clip(thr[idx], 0.0, 1.0))
+
+
+# -----------------------------------------------------------------------------
+# Evaluasi
+# -----------------------------------------------------------------------------
+@torch.no_grad()
+def predict_proba(model, X, y, batch_size: int = 4096):
+    """Return (loss rata-rata, y numpy, probabilitas softmax numpy)."""
+    model.eval()
+    X, y = to_tensors(X, y)
+    crit = nn.CrossEntropyLoss(reduction="sum")
+    total_loss, probs_all = 0.0, []
+    for i in range(0, len(X), batch_size):
+        xb = X[i:i + batch_size].to(DEVICE)
+        yb = y[i:i + batch_size].to(DEVICE)
+        logits = model(xb)
+        total_loss += crit(logits, yb).item()
+        probs_all.append(torch.softmax(logits, dim=1).cpu().numpy())
+    probs = np.concatenate(probs_all)
+    yt = y.numpy()
+    return total_loss / max(len(yt), 1), yt, probs
+
+
+def compute_metrics(yt: np.ndarray, probs: np.ndarray, n_classes: int,
+                    threshold: float = 0.5) -> dict:
+    if n_classes <= 2:
+        pred = (probs[:, 1] >= threshold).astype(np.int64)
+        avg = "binary"
+    else:
+        pred = probs.argmax(1)
+        avg = "macro"
+    out = {
+        "accuracy": float((pred == yt).mean()),
+        "precision": float(precision_score(yt, pred, average=avg, zero_division=0)),
+        "recall": float(recall_score(yt, pred, average=avg, zero_division=0)),
+        "f1": float(f1_score(yt, pred, average=avg, zero_division=0)),
+        "auc": _safe_auc(yt, probs, n_classes),
+        "ap": _safe_ap(yt, probs, n_classes),
+        "n": int(len(yt)),
+    }
+    if n_classes <= 2:
+        out["pos_pred_rate"] = float((pred == 1).mean())
+        out["prevalence"] = float((yt == 1).mean())
+        out["threshold"] = float(threshold)
+    return out
+
+
+def evaluate_model(model, X, y, n_classes: int = 2, batch_size: int = 4096,
+                   threshold: float = 0.5):
+    loss, yt, probs = predict_proba(model, X, y, batch_size)
+    return loss, compute_metrics(yt, probs, n_classes, threshold)
+
+
+def evaluate_personalized_per_client(
+    theta_params: NDArrays,
+    fed_data: Dict[str, dict],
+    n_classes: int,
+    local_dir: str,
+    split: str,
+    threshold: float = 0.5,
+    finetune_epochs: int = 0,
+    lr: float = 1e-3,
+    batch_size: int = 64,
+    seed: int = 0,
+    threshold_mode: str = "fixed",
+    threshold_criterion: str = "f1",
+    target_sensitivity: float = 0.9,
+    tune_split: str = "val",
+    tune_in_sample: bool = False,
+    collect_curves: bool = False,
+):
+    """
+    theta global + phi lokal tiap client -> evaluasi di data client itu.
+
+    threshold_mode:
+      "fixed"      : semua client pakai `threshold`.
+      "per_client" : threshold dipilih per client dari split `tune_split`.
+      "global"     : satu threshold dari gabungan `tune_split` semua client.
+    Bila split == tune_split, tuning hanya jalan jika tune_in_sample=True
+    (threshold dituning pada data yang sama -> optimistis). Selama ronde,
+    validasi memakai threshold tetap. Tuning hanya untuk kasus biner.
+
+    Return: (loss_rata2, mean_metrik, per_client, extras)
+      extras = {"curves", "sweep", "thresholds"} (terisi bila collect_curves).
+    """
+    tuning = (threshold_mode != "fixed" and n_classes <= 2
+              and (split != tune_split or tune_in_sample))
+
+    cache: "OrderedDict[str, dict]" = OrderedDict()
+    for cid, (name, c) in enumerate(fed_data.items()):
+        Xk, yk = c.get(f"X_{split}"), c.get(f"y_{split}")
+        if Xk is None or yk is None:
+            continue
+        model = ClientModel(c["n_features"], n_classes).to(DEVICE)
+        set_theta_params(model, theta_params)
+        if not load_local_if_exists(model, local_dir, cid):
+            continue
+        if finetune_epochs > 0:
+            finetune_local_head(model, c["X_train"], c["y_train"],
+                                finetune_epochs, lr, batch_size, seed + cid)
+        loss, yt, probs = predict_proba(model, Xk, yk)
+        entry = {"loss": loss, "yt": yt, "probs": probs, "tune": None}
+        if tuning:
+            if split == tune_split:
+                entry["tune"] = (yt, probs[:, 1])
+            else:
+                Xv, yv = c.get(f"X_{tune_split}"), c.get(f"y_{tune_split}")
+                if Xv is not None and yv is not None:
+                    _, yv_np, pv = predict_proba(model, Xv, yv)
+                    entry["tune"] = (yv_np, pv[:, 1])
+        cache[name] = entry
+
+    if not cache:
+        return None, None, {}, {}
+
+    # ---- tentukan threshold per client ----
+    thr_by = {n: float(threshold) for n in cache}
+    if tuning:
+        if threshold_mode == "per_client":
+            for n, e in cache.items():
+                if e["tune"] is not None:
+                    thr_by[n] = select_threshold(
+                        e["tune"][0], e["tune"][1], threshold_criterion,
+                        target_sensitivity, threshold)
+        else:  # "global"
+            tunes = [e["tune"] for e in cache.values() if e["tune"] is not None]
+            if tunes:
+                g = select_threshold(
+                    np.concatenate([t[0] for t in tunes]),
+                    np.concatenate([t[1] for t in tunes]),
+                    threshold_criterion, target_sensitivity, threshold)
+                thr_by = {n: g for n in cache}
+
+    # ---- metrik per client ----
+    losses, per_client = [], {}
+    for n, e in cache.items():
+        losses.append(e["loss"])
+        per_client[n] = compute_metrics(e["yt"], e["probs"], n_classes, thr_by[n])
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        mean_m = {k: _nanmean(m[k] for m in per_client.values())
+                  for k in METRIC_KEYS}
+
+    # ---- kurva ROC/PR + sweep (biner saja) ----
+    extras: dict = {}
+    if collect_curves and n_classes <= 2:
+        curves, sweeps, ys, ps = {}, {}, [], []
+        for n, e in cache.items():
+            p1 = e["probs"][:, 1]
+            cv = compute_curves(e["yt"], p1)
+            if cv is not None:
+                curves[n] = cv
+            sweeps[n] = threshold_sweep(e["yt"], p1)
+            ys.append(e["yt"])
+            ps.append(p1)
+        yp, pp = np.concatenate(ys), np.concatenate(ps)
+        cv = compute_curves(yp, pp)
+        if cv is not None:
+            curves[POOLED] = cv
+        sweeps[POOLED] = threshold_sweep(yp, pp)
+        extras = {"curves": curves, "sweep": sweeps, "thresholds": thr_by}
+
+    return float(np.mean(losses)), mean_m, per_client, extras
+
+
+def _store_eval(history: Dict, prefix: str, loss, mean_m, per_client, extras):
+    """Simpan hasil evaluasi akhir ke history di bawah `prefix`."""
+    history[prefix] = mean_m
+    history[f"{prefix}_loss"] = loss
+    history[f"{prefix}_per_client"] = per_client
+    history[f"{prefix}_curves"] = extras.get("curves", {})
+    history[f"{prefix}_sweep"] = extras.get("sweep", {})
+    history[f"{prefix}_thresholds"] = extras.get("thresholds", {})
+
+
+# -----------------------------------------------------------------------------
+# Client
+# -----------------------------------------------------------------------------
+class FlowerClient(NumPyClient):
+    def __init__(self, cid, name, X, y, n_features, n_classes,
+                 local_epochs, batch_size, lr, local_dir, proximal_mu=0.0,
+                 class_weight_power=0.5, seed=0):
+        self.cid = cid
+        self.name = name
+        self.seed = seed
+        torch.set_num_threads(1)
+        set_seed(seed + cid)  # init phi deterministik per client
+        self.X, self.y = to_tensors(X, y)
+        self.n_classes = n_classes
+        self.model = ClientModel(n_features, n_classes).to(DEVICE)
+        self.local_epochs = local_epochs
+        self.batch_size = batch_size
+        self.lr = lr
+        self.local_dir = local_dir
+        self.proximal_mu = proximal_mu
+        self.class_weight = compute_class_weight(self.y, n_classes,
+                                                 class_weight_power)
+
+    def _restore_local(self):
+        if load_local_if_exists(self.model, self.local_dir, self.cid):
+            self.model.to(DEVICE)
+
+    def fit(self, parameters, config):
+        bytes_down = params_nbytes(parameters)
+
+        set_theta_params(self.model, parameters)        # theta <- global
+        self._restore_local()                           # phi <- lokal
+        global_theta = theta_param_only(self.model, parameters)
+
+        fit_count = read_fit_count(self.local_dir, self.cid)
+        g = torch.Generator().manual_seed(self.seed + self.cid * 10007 + fit_count)
+        loader = make_loader(self.X, self.y, self.batch_size, g)
+
+        train_local(self.model, loader, self.local_epochs, self.lr,
+                    self.proximal_mu, global_theta, self.class_weight)
+
+        save_local(self.model, self.local_dir, self.cid, fit_count + 1)
+
+        new_params = get_theta_params(self.model)
+        bytes_up = params_nbytes(new_params)
+        return new_params, len(self.X), {
+            "bytes_down": float(bytes_down),
+            "bytes_up": float(bytes_up),
+        }
+
+    def evaluate(self, parameters, config):
+        # Tidak dipakai (fraction_evaluate=0); evaluasi dilakukan server.
+        set_theta_params(self.model, parameters)
+        self._restore_local()
+        loss, m = evaluate_model(self.model, self.X, self.y,
+                                 n_classes=self.n_classes)
+        m = {k: (0.0 if (isinstance(v, float) and np.isnan(v)) else v)
+             for k, v in m.items()}
+        return loss, len(self.X), m
+
+
+# -----------------------------------------------------------------------------
+# Strategi agregasi
+# -----------------------------------------------------------------------------
+def build_strategy(aggregation: str, num_clients: int, init_params, evaluate_fn,
+                   fit_metrics_agg, strat_cfg: dict):
+    if aggregation in ("fedavg", "fedprox"):
+        # FedProx = agregasi FedAvg; perbedaannya di suku proximal sisi client.
+        return FedAvgTheta(
+            fraction_fit=1.0,
+            fraction_evaluate=0.0,
+            min_fit_clients=num_clients,
+            min_evaluate_clients=0,
+            min_available_clients=num_clients,
+            initial_parameters=init_params,
+            evaluate_fn=evaluate_fn,
+            fit_metrics_aggregation_fn=fit_metrics_agg,
+        )
+    from aggregation4 import build_fedcosine_pairwise_strategy
+    return build_fedcosine_pairwise_strategy(
+        num_clients=num_clients,
+        init_params=init_params,
+        evaluate_fn=evaluate_fn,
+        fit_metrics_agg=fit_metrics_agg,
+        **strat_cfg,
+    )
+
+
+# -----------------------------------------------------------------------------
+# Pelaporan
+# -----------------------------------------------------------------------------
+def per_client_table(per_client: Dict[str, dict],
+                     client_label: str = "state") -> pd.DataFrame:
+    rows = {name: {"n": m.get("n", np.nan),
+                   "acc": m["accuracy"], "prec": m["precision"],
+                   "rec": m["recall"], "f1": m["f1"], "auc": m["auc"],
+                   "ap": m.get("ap", np.nan),
+                   "thr": m.get("threshold", np.nan)}
+            for name, m in per_client.items()}
+    df = pd.DataFrame.from_dict(rows, orient="index")
+    df["n"] = df["n"].astype(int)
+    df.index.name = client_label
+    return df
+
+
+def summarize_clients(df: pd.DataFrame):
+    """Return (tabel ringkasan makro/berbobot/std, dict rata-rata berbobot)."""
+    labels = {"acc": "Akurasi", "prec": "Presisi", "rec": "Recall",
+              "f1": "F1", "auc": "AUC-ROC", "ap": "AP (PR-AUC)"}
+    w = df["n"].to_numpy(dtype=float)
+    rows, weighted = {}, {}
+    for k, lab in labels.items():
+        v = df[k].to_numpy(dtype=float)
+        ok = ~np.isnan(v)
+        macro = float(v[ok].mean()) if ok.any() else float("nan")
+        wavg = float(np.average(v[ok], weights=w[ok])) if ok.any() else float("nan")
+        std = float(pd.Series(v[ok]).std()) if ok.sum() > 1 else float("nan")
+        rows[lab] = {"Rata-rata (makro)": macro,
+                     "Rata-rata berbobot": wavg,
+                     "Std antar client": std}
+        weighted[k] = wavg
+    return pd.DataFrame(rows).T, weighted
+
+
+def print_round_table(history: Dict) -> None:
+    n = len(history["round"])
+    df = pd.DataFrame({
+        "round": history["round"],
+        "val_loss": history["loss"],
+        "acc": history["accuracy"],
+        "prec": history["precision"],
+        "rec": history["recall"],
+        "f1": history["f1"],
+        "auc": history["auc"],
+        "ap": history["ap"],
+        "n_client_fit": history["n_client_fit"][:n],
+        "down_MB": [b / MB for b in history["bytes_down"][:n]],
+        "up_MB": [b / MB for b in history["bytes_up"][:n]],
+        "total_MB": [b / MB for b in history["bytes_total"][:n]],
+    })
+    print(df.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
+
+
+def print_bandwidth_report(history: Dict) -> None:
+    c = history["comm"]
+    print("=== Bandwidth komunikasi (yang benar-benar dikirim: theta) ===")
+    print(f"Total downlink (server->client): {c['total_down_mb']:.3f} MB")
+    print(f"Total uplink   (client->server): {c['total_up_mb']:.3f} MB")
+    print(f"TOTAL                          : {c['total_mb']:.3f} MB")
+    print(f"Rata-rata per ronde            : {c['avg_per_round_mb']:.3f} MB")
+    print(f"Rata-rata per client (total)   : {c['avg_per_client_mb']:.3f} MB")
+    print(f"[Pembanding] bila FULL parameter: {c['full_total_mb']:.3f} MB "
+          f"(hemat {c['saving_pct']:.2f}%)")
+
+
+def _print_split_report(per_client: Dict, title: str, client_label: str):
+    df = per_client_table(per_client, client_label)
+    summ, weighted = summarize_clients(df)
+    print(f"\n=== {title} ===")
+    print(df.to_string(float_format=lambda x: f"{x:.4f}"))
+    print(summ.to_string(float_format=lambda x: f"{x:.4f}"))
+    print(weighted)
+    return df, summ, weighted
+
+
+def _print_curve_summary(history: Dict, prefix: str) -> None:
+    """Ringkasan kurva gabungan (pooled) + threshold yang dipakai."""
+    cv = (history.get(f"{prefix}_curves") or {}).get(POOLED)
+    if cv:
+        base = cv["prevalence"]
+        print(f"[pooled] AUC-ROC={cv['auc']:.4f} | AP={cv['ap']:.4f} "
+              f"(baseline acak AP = prevalensi = {base:.4f}) | n={cv['n']}")
+    thr = history.get(f"{prefix}_thresholds")
+    if thr and history.get("threshold_mode", "fixed") != "fixed":
+        s = ", ".join(f"{n}={t:.3f}" for n, t in thr.items())
+        note = " (in-sample, optimistis)" if prefix.startswith("val") else ""
+        print(f"[threshold {history['threshold_mode']}/"
+              f"{history.get('threshold_criterion')}{note}] {s}")
+
+
+def print_val_test_comparison(history: Dict) -> None:
+    """Tabel validasi vs test (rata-rata makro antar client) + gap (val - test)."""
+    pairs = (("ronde terakhir", "val_last", "test"),
+             ("ronde terbaik", "val_best", "test_best"))
+    rows = {}
+    for label, v, t in pairs:
+        mv, mt = history.get(v), history.get(t)
+        if not mv or not mt:
+            continue
+        lv, lt = history.get(f"{v}_loss"), history.get(f"{t}_loss")
+        if lv is not None and lt is not None:
+            rows[(label, "loss")] = {"val": lv, "test": lt, "gap (val-test)": lv - lt}
+        for k in METRIC_KEYS:
+            rows[(label, k)] = {"val": mv[k], "test": mt[k],
+                                "gap (val-test)": mv[k] - mt[k]}
+    if not rows:
+        print("[val vs test] tidak ada data validasi/test untuk dibandingkan.")
+        return
+    df = pd.DataFrame.from_dict(rows, orient="index")
+    df.index = pd.MultiIndex.from_tuples(df.index, names=["ronde", "metrik"])
+    print("\n=== Validasi vs Test (rata-rata makro antar client) ===")
+    print(df.to_string(float_format=lambda x: f"{x:.4f}"))
+    print("Gap positif besar pada metrik = indikasi overfit ke validasi "
+          "(threshold/ronde dipilih dari validasi).")
+
+
+def report_results(history: Dict, client_label: str = "state") -> Dict:
+    """Cetak seluruh laporan; kembalikan dict ringkasan berbobot test (ronde terakhir)."""
+    if history["round"]:
+        i = len(history["round"]) - 1
+        print(f"[ronde {history['round'][i]}] val F1 {history['f1'][i]:.4f} | "
+              f"AUC {history['auc'][i]:.4f} | AP {history['ap'][i]:.4f} | "
+              f"bandwidth ronde {history['bytes_total'][i] / MB:.3f} MB")
+    print_bandwidth_report(history)
+    print_round_table(history)
+
+    for prefix, title in REPORT_SECTIONS:
+        pc = history.get(f"{prefix}_per_client")
+        if not pc:
+            continue
+        if prefix == "val_best" or prefix == "test_best":
+            title = f"{title} = ronde {history.get('best_round')}"
+        df, summ, weighted = _print_split_report(pc, title, client_label)
+        _print_curve_summary(history, prefix)
+        history[f"{prefix}_table"] = df
+        history[f"{prefix}_summary"] = summ
+        history[f"{prefix}_weighted"] = weighted
+
+    print_val_test_comparison(history)
+    return history.get("test_weighted", {})
+
+
+def print_threshold_sweep(history: Dict, client: str = POOLED,
+                          split: str = "test_best_sweep") -> None:
+    """Cetak tabel threshold sweep (default: gabungan semua client)."""
+    rows = (history.get(split) or {}).get(client)
+    if not rows:
+        print(f"[sweep] tidak ada data untuk '{client}' di {split}.")
+        return
+    print(f"\n=== Threshold sweep: {client} ({split}) ===")
+    print(pd.DataFrame(rows).to_string(index=False,
+                                        float_format=lambda x: f"{x:.4f}"))
+
+
+# -----------------------------------------------------------------------------
+# Plot kurva diagnostik (matplotlib, opsional)
+# -----------------------------------------------------------------------------
+def plot_diagnostic_curves(history: Dict, out_path: str,
+                           split: str = "test_best_curves",
+                           show_clients: bool = True,
+                           title: Optional[str] = None) -> str:
+    """Gambar ROC (kiri) dan Precision-Recall (kanan): per client + pooled.
+    split: 'test_best_curves' | 'test_curves' | 'val_best_curves' | 'val_last_curves'."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    curves = history.get(split)
+    if not curves:
+        print(f"[plot] tidak ada kurva di '{split}' (hanya kasus biner).")
+        return ""
+    fig, (ax_r, ax_p) = plt.subplots(1, 2, figsize=(13, 5.2))
+    for name, cv in curves.items():
+        if name == POOLED:
+            kw = dict(color="black", lw=2.5, zorder=5)
+            lab = "POOLED"
+        elif not show_clients:
+            continue
+        else:
+            kw = dict(lw=1.2, alpha=0.8)
+            lab = str(name)
+        ax_r.plot(cv["fpr"], cv["tpr"], label=f"{lab} (AUC={cv['auc']:.3f})", **kw)
+        ax_p.plot(cv["recall"], cv["precision"],
+                  label=f"{lab} (AP={cv['ap']:.3f})", **kw)
+    ax_r.plot([0, 1], [0, 1], "--", color="gray", lw=1)
+    ax_r.set(xlabel="False Positive Rate (1 - spesifisitas)",
+             ylabel="True Positive Rate (sensitivitas)", title="Kurva ROC",
+             xlim=(0, 1), ylim=(0, 1.02))
+    if POOLED in curves:
+        ax_p.axhline(curves[POOLED]["prevalence"], ls="--", color="gray", lw=1,
+                     label=f"baseline acak ({curves[POOLED]['prevalence']:.3f})")
+    ax_p.set(xlabel="Recall", ylabel="Precision", title="Kurva Precision-Recall",
+             xlim=(0, 1), ylim=(0, 1.02))
+    for ax in (ax_r, ax_p):
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=7, loc="best")
+    if title:
+        fig.suptitle(title)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    print(f"[plot] kurva ROC/PR tersimpan di: {out_path}")
+    return out_path
+
+
+def plot_val_test_curves(history: Dict, out_path: str, best: bool = True) -> str:
+    """Bandingkan kurva POOLED validasi vs test pada ronde yang sama."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, (ax_r, ax_p) = plt.subplots(1, 2, figsize=(13, 5.2))
+    prev, plotted = None, False
+    for split in VALID_EVAL_SPLITS:
+        cv = (history.get(f"{eval_prefix(split, best)}_curves") or {}).get(POOLED)
+        if not cv:
+            continue
+        plotted, prev = True, cv["prevalence"]
+        ax_r.plot(cv["fpr"], cv["tpr"], lw=1.8, label=f"{split} (AUC={cv['auc']:.3f})")
+        ax_p.plot(cv["recall"], cv["precision"], lw=1.8,
+                  label=f"{split} (AP={cv['ap']:.3f})")
+    if not plotted:
+        plt.close(fig)
+        print("[plot] tidak ada kurva pooled val/test.")
+        return ""
+    ax_r.plot([0, 1], [0, 1], "--", color="gray", lw=1)
+    ax_r.set(xlabel="False Positive Rate", ylabel="True Positive Rate",
+             title="ROC (pooled): val vs test", xlim=(0, 1), ylim=(0, 1.02))
+    if prev is not None:
+        ax_p.axhline(prev, ls="--", color="gray", lw=1,
+                     label=f"baseline acak ({prev:.3f})")
+    ax_p.set(xlabel="Recall", ylabel="Precision",
+             title="Precision-Recall (pooled): val vs test",
+             xlim=(0, 1), ylim=(0, 1.02))
+    for ax in (ax_r, ax_p):
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=8, loc="best")
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    print(f"[plot] kurva val vs test tersimpan di: {out_path}")
+    return out_path
+
+
+def plot_comparison_curves(histories: Dict[str, Dict], out_path: str,
+                           split: str = "test_best_curves") -> str:
+    """Bandingkan kurva POOLED antar agregasi (ROC kiri, PR kanan)."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, (ax_r, ax_p) = plt.subplots(1, 2, figsize=(13, 5.2))
+    prev = None
+    plotted = False
+    for agg, h in histories.items():
+        cv = (h.get(split) or {}).get(POOLED)
+        if not cv:
+            continue
+        plotted = True
+        prev = cv["prevalence"]
+        ax_r.plot(cv["fpr"], cv["tpr"], lw=1.8, label=f"{agg} (AUC={cv['auc']:.3f})")
+        ax_p.plot(cv["recall"], cv["precision"], lw=1.8,
+                  label=f"{agg} (AP={cv['ap']:.3f})")
+    if not plotted:
+        plt.close(fig)
+        print(f"[plot] tidak ada kurva pooled di '{split}'.")
+        return ""
+    ax_r.plot([0, 1], [0, 1], "--", color="gray", lw=1)
+    ax_r.set(xlabel="False Positive Rate", ylabel="True Positive Rate",
+             title="ROC (pooled)", xlim=(0, 1), ylim=(0, 1.02))
+    if prev is not None:
+        ax_p.axhline(prev, ls="--", color="gray", lw=1,
+                     label=f"baseline acak ({prev:.3f})")
+    ax_p.set(xlabel="Recall", ylabel="Precision", title="Precision-Recall (pooled)",
+             xlim=(0, 1), ylim=(0, 1.02))
+    for ax in (ax_r, ax_p):
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=8, loc="best")
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    print(f"[plot] komparasi kurva antar agregasi tersimpan di: {out_path}")
+    return out_path
+
+
+# -----------------------------------------------------------------------------
+# Runner
+# -----------------------------------------------------------------------------
+def run_federated(
+    fed_data: Dict[str, dict],
+    name: str,
+    n_classes: int = 2,
+    aggregation: str = "pairwise",     # "fedavg" | "fedprox" | "pairwise"
+    proximal_mu: float = 0.0,          # mu untuk fedavg/pairwise (default off)
+    fedprox_mu: float = 0.01,          # mu khusus aggregation="fedprox"
+    num_rounds: int = 10,
+    local_epochs: int = 10,
+    batch_size: int = 64,
+    lr: float = 1e-3,
+    strategy_kwargs: Optional[dict] = None,
+    class_weight_power: float = 0.5,   # 0.0 = tanpa class weight
+    threshold: float = 0.5,
+    threshold_mode: str = "fixed",         # "fixed" | "per_client" | "global"
+    threshold_criterion: str = "f1",       # "f1" | "youden" | "gmean" | "sens_target"
+    target_sensitivity: float = 0.9,       # dipakai bila criterion="sens_target"
+    seed: int = 42,
+    select_by: str = "f1",             # "loss" | salah satu METRIC_KEYS (val)
+    eval_finetune_epochs: int = 0,
+    eval_splits=VALID_EVAL_SPLITS,     # evaluasi akhir: ("val", "test")
+    verbose_report: bool = True,
+    client_label: str = "state",
+    max_parallel: int = 4,             # jumlah worker/actor Ray paralel (turunkan jika RAM kecil)
+    on_round: Optional[Callable] = None,  # callback(round, num_rounds, val_loss, val_metrics)
+    mode: Optional[str] = None,        # DEPRECATED: diabaikan (sim/alt sudah dihapus)
+) -> Dict:
+    if mode is not None:
+        warnings.warn("Argumen `mode` sudah tidak dipakai (FedSim/FedAlt dihapus); "
+                      "training memakai satu mekanisme train_local.")
+    if aggregation not in VALID_AGGS:
+        raise ValueError(f"aggregation harus salah satu dari {VALID_AGGS}, dapat: {aggregation!r}")
+    if select_by != "loss" and select_by not in METRIC_KEYS:
+        raise ValueError(f"select_by harus 'loss' atau salah satu dari {METRIC_KEYS}")
+    if threshold_mode not in VALID_THR_MODES:
+        raise ValueError(f"threshold_mode harus salah satu dari {VALID_THR_MODES}")
+    if threshold_criterion not in VALID_THR_CRITERIA:
+        raise ValueError(f"threshold_criterion harus salah satu dari {VALID_THR_CRITERIA}")
+    if not 0.0 < target_sensitivity <= 1.0:
+        raise ValueError("target_sensitivity harus di (0, 1].")
+    eval_splits = tuple(eval_splits)
+    bad = [s for s in eval_splits if s not in VALID_EVAL_SPLITS]
+    if bad:
+        raise ValueError(f"eval_splits harus subset dari {VALID_EVAL_SPLITS}, dapat: {bad}")
+    if threshold_mode != "fixed" and n_classes > 2:
+        warnings.warn("Tuning threshold hanya untuk kasus biner; memakai 'fixed'.")
+        threshold_mode = "fixed"
+    for cname, c in fed_data.items():
+        if "n_features" not in c:
+            raise KeyError(f"fed_data['{cname}'] harus punya key 'n_features'.")
+    if threshold_mode != "fixed":
+        for cname, c in fed_data.items():
+            if c.get("X_val") is None or c.get("y_val") is None:
+                raise KeyError(f"threshold_mode='{threshold_mode}' butuh "
+                               f"X_val/y_val pada fed_data['{cname}'].")
+
+    # Tanpa adapter: semua client wajib punya jumlah fitur sama (theta dibagi).
+    n_feat_set = {int(c["n_features"]) for c in fed_data.values()}
+    if len(n_feat_set) != 1:
+        raise ValueError(f"Tanpa adapter, n_features harus sama di semua client; "
+                         f"ditemukan: {sorted(n_feat_set)}")
+    n_features = n_feat_set.pop()
+
+    if aggregation == "fedprox":
+        if fedprox_mu <= 0:
+            raise ValueError("fedprox membutuhkan fedprox_mu > 0.")
+        mu = fedprox_mu
+    else:
+        mu = proximal_mu
+
+    if aggregation == "pairwise":
+        from aggregation4 import build_fedcosine_pairwise_strategy  # noqa: F401
+
+    strat_cfg = dict(temperature=0.01, min_weight=0.0,
+                     similarity_agg="mean", data_influence=0.3)
+    if strategy_kwargs:
+        strat_cfg.update(strategy_kwargs)
+
+    num_clients = len(fed_data)
+    client_names = list(fed_data.keys())
+    root_dir = tempfile.mkdtemp(prefix="fl_")
+    local_dir = os.path.join(root_dir, "local")
+    best_dir = os.path.join(root_dir, "best")
+    os.makedirs(local_dir)
+    data_dir = os.path.join(root_dir, "data")
+    os.makedirs(data_dir)
+    # Data tiap client disimpan ke disk. client_fn hanya memegang path, sehingga
+    # Ray tidak mem-pickle seluruh fed_data (semua client) ke setiap actor/pesan.
+    for _cid, (_cn, _c) in enumerate(fed_data.items()):
+        _X, _y = to_tensors(_c["X_train"], _c["y_train"])
+        torch.save({"X": _X, "y": _y}, os.path.join(data_dir, f"client_{_cid}.pt"))
+    tag = f"{name}|{aggregation}"
+
+    history: Dict = {k: [] for k in
+                     ["round", "loss", *METRIC_KEYS,
+                      "bytes_up", "bytes_down", "bytes_total", "cum_mb",
+                      "n_client_fit", "val_per_client"]}
+    history.update(aggregation=aggregation, seed=seed, mu=mu,
+                   threshold_mode=threshold_mode,
+                   threshold_criterion=threshold_criterion)
+    last = {"params": None, "best_params": None, "best_round": None,
+            "best_score": None}
+
+    def client_fn(context: Context) -> Client:
+        cid = int(context.node_config["partition-id"])
+        cname = client_names[cid]
+        blob = torch.load(os.path.join(data_dir, f"client_{cid}.pt"),
+                          map_location="cpu", weights_only=True)
+        return FlowerClient(
+            cid, cname, blob["X"], blob["y"], n_features, n_classes,
+            local_epochs, batch_size, lr, local_dir, mu,
+            class_weight_power=class_weight_power, seed=seed,
+        ).to_client()
+
+    def fit_metrics_agg(results):
+        up = sum(m.get("bytes_up", 0.0) for _, m in results)
+        down = sum(m.get("bytes_down", 0.0) for _, m in results)
+        prev = history["cum_mb"][-1] if history["cum_mb"] else 0.0
+        history["n_client_fit"].append(len(results))
+        history["bytes_up"].append(up)
+        history["bytes_down"].append(down)
+        history["bytes_total"].append(up + down)
+        history["cum_mb"].append(prev + (up + down) / MB)
+        return {"bytes_up": up, "bytes_down": down}
+
+    def is_better(score, best):
+        if np.isnan(score):
+            return False
+        if best is None:
+            return True
+        return score < best if select_by == "loss" else score > best
+
+    def evaluate_fn(server_round, parameters, config):
+        if server_round == 0:
+            return None
+        theta = parameters if isinstance(parameters, list) \
+            else [np.asarray(a) for a in parameters_to_ndarrays(parameters)]
+        # validasi selama ronde: threshold tetap (tidak ada tuning pada val)
+        loss, m, per_client, _ = evaluate_personalized_per_client(
+            theta, fed_data, n_classes, local_dir, split="val",
+            threshold=threshold, finetune_epochs=eval_finetune_epochs,
+            lr=lr, batch_size=batch_size, seed=seed)
+        if m is None:
+            return None
+        last["params"] = theta
+        history["round"].append(server_round)
+        history["loss"].append(loss)
+        history["val_per_client"].append(per_client)
+        for k in METRIC_KEYS:
+            history[k].append(m[k])
+
+        # snapshot ronde terbaik (theta + phi lokal pada ronde itu)
+        score = loss if select_by == "loss" else m[select_by]
+        if is_better(score, last["best_score"]):
+            last["best_score"] = score
+            last["best_round"] = server_round
+            last["best_params"] = theta
+            shutil.rmtree(best_dir, ignore_errors=True)
+            shutil.copytree(local_dir, best_dir)
+
+        comm = ""
+        if len(history["bytes_total"]) >= server_round:
+            comm = (f" | comm={history['bytes_total'][server_round - 1] / MB:.3f}MB"
+                    f" (cum {history['cum_mb'][server_round - 1]:.3f}MB)")
+        print(f"[{tag}] round {server_round:02d} | loss={loss:.4f} "
+              f"acc={m['accuracy']:.4f} prec={m['precision']:.4f} "
+              f"rec={m['recall']:.4f} f1={m['f1']:.4f} auc={m['auc']:.4f} "
+              f"ap={m['ap']:.4f}{comm}")
+        if on_round is not None:
+            on_round(server_round, num_rounds, loss, m)
+        return loss, {k: (0.0 if np.isnan(v) else v) for k, v in m.items()}
+
+    # parameter awal = theta saja; di-seed agar sama antar metode/run
+    set_seed(seed)
+    init_model = ClientModel(n_features, n_classes)
+    init_params = ndarrays_to_parameters(get_theta_params(init_model))
+
+    def server_fn(context: Context) -> ServerAppComponents:
+        strategy = build_strategy(aggregation, num_clients, init_params,
+                                  evaluate_fn, fit_metrics_agg, strat_cfg)
+        return ServerAppComponents(
+            strategy=strategy, config=ServerConfig(num_rounds=num_rounds))
+
+    try:
+        import ray
+        if ray.is_initialized():
+            ray.shutdown()      # buang sesi Ray lama agar init_args berlaku
+        run_simulation(
+            server_app=ServerApp(server_fn=server_fn),
+            client_app=ClientApp(client_fn=client_fn),
+            num_supernodes=num_clients,
+            backend_config={
+                "client_resources": {"num_cpus": 1, "num_gpus": 0.0},
+                "init_args": {"num_cpus": max_parallel, "num_gpus": 0,
+                              "include_dashboard": False},
+            },
+        )
+
+        ft = dict(threshold=threshold, finetune_epochs=eval_finetune_epochs,
+                  lr=lr, batch_size=batch_size, seed=seed,
+                  threshold_mode=threshold_mode,
+                  threshold_criterion=threshold_criterion,
+                  target_sensitivity=target_sensitivity,
+                  tune_split="val", collect_curves=True)
+
+        # ---- evaluasi akhir: tiap split (val/test) x (ronde terakhir/terbaik) ----
+        for split in eval_splits:
+            # val: threshold dituning pada val itu sendiri (in-sample) agar
+            # konsisten dengan threshold yang dipakai di test.
+            ft_s = dict(ft, tune_in_sample=(split == "val"))
+
+            if last["params"] is not None:
+                loss_l, mean_l, pc_l, ex_l = evaluate_personalized_per_client(
+                    last["params"], fed_data, n_classes, local_dir,
+                    split=split, **ft_s)
+                _store_eval(history, eval_prefix(split, False),
+                            loss_l, mean_l, pc_l, ex_l)
+
+            if last["best_params"] is not None and os.path.isdir(best_dir):
+                loss_b, mean_b, pc_b, ex_b = evaluate_personalized_per_client(
+                    last["best_params"], fed_data, n_classes, best_dir,
+                    split=split, **ft_s)
+                _store_eval(history, eval_prefix(split, True),
+                            loss_b, mean_b, pc_b, ex_b)
+
+        if last["best_round"] is not None:
+            history["best_round"] = last["best_round"]
+            print(f"[{tag}] best val round (by {select_by}) = {last['best_round']}")
+    finally:
+        shutil.rmtree(root_dir, ignore_errors=True)
+
+    # ---- ringkasan bandwidth ----
+    total_up = float(sum(history["bytes_up"]))
+    total_down = float(sum(history["bytes_down"]))
+    theta_bytes = params_nbytes(get_theta_params(init_model))
+    n_rounds_done = max(len(history["bytes_total"]), 1)
+
+    # Semua client punya arsitektur sama -> ukuran model penuh identik.
+    full_per_round = num_clients * 2 * full_model_nbytes(init_model)   # down + up
+    full_total = full_per_round * n_rounds_done
+    actual_total = total_up + total_down
+    saving_pct = (1 - actual_total / full_total) * 100 if full_total else 0.0
+
+    history["comm"] = {
+        "theta_size_mb": theta_bytes / MB,
+        "total_up_mb": total_up / MB,
+        "total_down_mb": total_down / MB,
+        "total_mb": actual_total / MB,
+        "avg_per_round_mb": actual_total / MB / n_rounds_done,
+        "avg_per_client_mb": actual_total / MB / max(num_clients, 1),
+        "full_total_mb": full_total / MB,
+        "saving_pct": saving_pct,
+    }
+
+    if verbose_report:
+        history["summary"] = report_results(history, client_label)
+    return history
+
+
+# -----------------------------------------------------------------------------
+# Komparasi antar agregasi (fedavg vs fedprox vs pairwise)
+# -----------------------------------------------------------------------------
+def run_comparison(fed_data: Dict[str, dict], name: str,
+                   aggregations=VALID_AGGS, seeds=(42,),
+                   **run_kwargs) -> Dict[str, Dict]:
+    """
+    Jalankan beberapa agregasi pada data & seed yang sama.
+    Hasil tiap seed di histories[agg]["runs"]; history utama = seed pertama.
+    Argumen lain (fedprox_mu, num_rounds, threshold_mode, ...) diteruskan
+    ke run_federated.
+    """
+    run_kwargs.setdefault("verbose_report", False)
+    histories = {}
+    for agg in aggregations:
+        runs = []
+        for s in seeds:
+            print(f"\n===== {name} | AGG: {agg} | seed={s} =====")
+            runs.append(run_federated(fed_data, name,
+                                      aggregation=agg, seed=s, **run_kwargs))
+        h = dict(runs[0])      # salinan dangkal: hindari referensi melingkar
+        h["runs"] = runs
+        histories[agg] = h
+    return histories
+
+
+def summarize_seeds(histories: Dict[str, Dict], split: str = "test") -> Dict:
+    """mean, std antar seed untuk metrik rata-rata client.
+    split: 'test' | 'test_best' | 'val_last' | 'val_best'."""
+    out = {}
+    for agg, h in histories.items():
+        runs = [r for r in h.get("runs", [h]) if r.get(split)]
+        out[agg] = {}
+        for k in METRIC_KEYS:
+            v = np.array([r[split][k] for r in runs], dtype=float)
+            if v.size == 0 or np.all(np.isnan(v)):
+                out[agg][k] = (float("nan"), float("nan"))
+            else:
+                out[agg][k] = (float(np.nanmean(v)), float(np.nanstd(v)))
+    return out
+
+
+def print_seed_summary(histories: Dict[str, Dict], split: str = "test") -> None:
+    summ = summarize_seeds(histories, split)
+    rows = {agg: {k: f"{mu:.4f} ± {sd:.4f}" for k, (mu, sd) in d.items()}
+            for agg, d in summ.items()}
+    print(f"\n=== Ringkasan antar seed ({split}) ===")
+    print(pd.DataFrame(rows).T.to_string())
+
+
+def print_seed_val_test(histories: Dict[str, Dict], best: bool = True) -> None:
+    """Ringkasan antar seed untuk validasi DAN test berdampingan."""
+    for split in ("val", "test"):
+        print_seed_summary(histories, eval_prefix(split, best))
+
+
+def build_client_comparison(histories: Dict[str, Dict],
+                            split: str = "test_per_client",
+                            baseline: str = "fedavg") -> list:
+    methods = list(histories.keys())
+    clients = []
+    for h in histories.values():
+        for cn in h.get(split, {}):
+            if cn not in clients:
+                clients.append(cn)
+
+    rows = []
+    for cn in clients + ["MEAN"]:
+        for k in METRIC_KEYS:
+            row = {"client": cn, "metric": k}
+            for meth in methods:
+                pc = histories[meth].get(split, {})
+                if cn == "MEAN":
+                    row[meth] = _nanmean(m[k] for m in pc.values()) if pc else float("nan")
+                else:
+                    row[meth] = pc.get(cn, {}).get(k, float("nan"))
+            if baseline in methods:
+                for meth in methods:
+                    if meth != baseline:
+                        row[f"delta_{meth}_vs_{baseline}"] = row[meth] - row[baseline]
+            rows.append(row)
+    return rows
+
+
+def print_comparison(histories: Dict[str, Dict],
+                     split: str = "test_per_client",
+                     baseline: str = "fedavg") -> None:
+    """split: 'test_per_client' | 'test_best_per_client' |
+    'val_last_per_client' | 'val_best_per_client'."""
+    rows = build_client_comparison(histories, split, baseline)
+    if not rows:
+        print("[compare] tidak ada data untuk dibandingkan.")
+        return
+    methods = list(histories.keys())
+    deltas = [m for m in methods if m != baseline and baseline in methods]
+
+    header = f"{'client':<22}{'metric':<11}" + "".join(f"{m:>13}" for m in methods) \
+        + "".join(f"{'Δ ' + d:>16}" for d in deltas)
+    print("\n" + header)
+    print("-" * len(header))
+    prev = None
+    for r in rows:
+        if prev is not None and r["client"] != prev:
+            print()
+        prev = r["client"]
+        line = f"{r['client'][:21]:<22}{r['metric']:<11}"
+        line += "".join(f"{r[m]:>13.4f}" for m in methods)
+        line += "".join(f"{r[f'delta_{d}_vs_{baseline}']:>+16.4f}" for d in deltas)
+        print(line)
+
+
+def export_comparison_csv(histories: Dict[str, Dict], out_path: str,
+                          split: str = "test_per_client",
+                          baseline: str = "fedavg") -> str:
+    rows = build_client_comparison(histories, split, baseline)
+    if not rows:
+        return ""
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"[export] komparasi per-client tersimpan di: {out_path}")
+    return out_path
+
+
+def export_rounds_comparison_csv(histories: Dict[str, Dict], out_path: str) -> str:
+    """Kurva per-ronde (mean antar client) semua agregasi dalam satu CSV (long)."""
+    fieldnames = ["aggregation", "round", "loss", *METRIC_KEYS,
+                  "n_client_fit", "cum_MB"]
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for agg, h in histories.items():
+            for i, r in enumerate(h.get("round", [])):
+                row = {"aggregation": agg, "round": r, "loss": h["loss"][i]}
+                for k in METRIC_KEYS:
+                    row[k] = h[k][i]
+                row["n_client_fit"] = (h["n_client_fit"][i]
+                                       if i < len(h["n_client_fit"]) else "")
+                row["cum_MB"] = h["cum_mb"][i] if i < len(h["cum_mb"]) else ""
+                writer.writerow(row)
+    print(f"[export] kurva per-ronde semua agregasi tersimpan di: {out_path}")
+    return out_path
+
+
+# -----------------------------------------------------------------------------
+# Ekspor CSV (single run)
+# -----------------------------------------------------------------------------
+def export_history_csv(history: Dict, out_path: str) -> str:
+    n = len(history.get("round", []))
+    fieldnames = ["round", "loss", *METRIC_KEYS, "n_client_fit",
+                  "bytes_up_MB", "bytes_down_MB", "bytes_total_MB", "cum_MB"]
+
+    def mb(key, i):
+        return history[key][i] / MB if i < len(history[key]) else ""
+
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for i in range(n):
+            row = {"round": history["round"][i], "loss": history["loss"][i]}
+            for k in METRIC_KEYS:
+                row[k] = history[k][i]
+            row["n_client_fit"] = (history["n_client_fit"][i]
+                                   if i < len(history["n_client_fit"]) else "")
+            row["bytes_up_MB"] = mb("bytes_up", i)
+            row["bytes_down_MB"] = mb("bytes_down", i)
+            row["bytes_total_MB"] = mb("bytes_total", i)
+            row["cum_MB"] = history["cum_mb"][i] if i < len(history["cum_mb"]) else ""
+            writer.writerow(row)
+    print(f"[export] metrik per-ronde tersimpan di: {out_path}")
+    return out_path
+
+
+def export_per_client_csv(history: Dict, out_path: str,
+                          split: str = "val_per_client") -> str:
+    """split: 'val_per_client' (per ronde) | 'val_last_per_client' |
+    'val_best_per_client' | 'test_per_client' | 'test_best_per_client'."""
+    if split != "val_per_client":
+        pc = history.get(split)
+        if not pc:
+            return ""
+        per_client_table(pc).to_csv(out_path)
+        print(f"[export] metrik {split} tersimpan di: {out_path}")
+        return out_path
+
+    rows = []
+    for r_idx, per_client in zip(history["round"], history.get(split, [])):
+        for cname, m in per_client.items():
+            rows.append({
+                "round": r_idx, "client": cname, "n": m.get("n", ""),
+                **{k: m[k] for k in METRIC_KEYS},
+            })
+    if not rows:
+        return ""
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["round", "client", "n", *METRIC_KEYS])
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"[export] metrik per-client tersimpan di: {out_path}")
+    return out_path
+
+
+def export_val_test_summary_csv(history: Dict, out_path: str) -> str:
+    """Ringkasan val vs test (makro antar client) untuk ronde terakhir & terbaik."""
+    fields = ["round_type", "split", "loss", *METRIC_KEYS]
+    rows = []
+    for rtype, best in (("last", False), ("best", True)):
+        for split in VALID_EVAL_SPLITS:
+            p = eval_prefix(split, best)
+            m = history.get(p)
+            if not m:
+                continue
+            rows.append({"round_type": rtype, "split": split,
+                         "loss": history.get(f"{p}_loss", ""),
+                         **{k: m[k] for k in METRIC_KEYS}})
+    if not rows:
+        return ""
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"[export] ringkasan val vs test tersimpan di: {out_path}")
+    return out_path
+
+
+def export_curves_csv(history: Dict, out_path: str,
+                      split: str = "test_best_curves") -> str:
+    """Titik kurva ROC & PR (long): client, curve, x, y, auc/ap, prevalence."""
+    curves = history.get(split)
+    if not curves:
+        return ""
+    with open(out_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["client", "curve", "x", "y", "auc", "ap", "prevalence", "n"])
+        for cn, cv in curves.items():
+            for x, y in zip(cv["fpr"], cv["tpr"]):
+                w.writerow([cn, "roc(fpr,tpr)", x, y, cv["auc"], cv["ap"],
+                            cv["prevalence"], cv["n"]])
+            for x, y in zip(cv["recall"], cv["precision"]):
+                w.writerow([cn, "pr(recall,precision)", x, y, cv["auc"], cv["ap"],
+                            cv["prevalence"], cv["n"]])
+    print(f"[export] titik kurva ROC/PR tersimpan di: {out_path}")
+    return out_path
+
+
+def export_threshold_sweep_csv(history: Dict, out_path: str,
+                               split: str = "test_best_sweep") -> str:
+    """Tabel threshold sweep semua client (+ POOLED) dalam satu CSV."""
+    sweeps = history.get(split)
+    if not sweeps:
+        return ""
+    fields = ["client", "threshold", "precision", "recall", "specificity",
+              "f1", "youden", "pos_pred_rate"]
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        for cn, rows in sweeps.items():
+            for r in rows:
+                writer.writerow({"client": cn, **r})
+    print(f"[export] threshold sweep tersimpan di: {out_path}")
+    return out_path
+
+
+# -----------------------------------------------------------------------------
+# Contoh pemakaian
+# -----------------------------------------------------------------------------
+# histories = run_comparison(
+#     fed_data, "exp1",
+#     aggregations=("fedavg", "fedprox", "pairwise"),
+#     seeds=(0, 1, 2),
+#     fedprox_mu=0.01,
+#     num_rounds=10, local_epochs=5,
+#     class_weight_power=0.0,         # 0.0 = persis train_local lama (tanpa class weight)
+#     select_by="ap",
+#     threshold_mode="per_client",
+#     threshold_criterion="f1",
+#     eval_splits=("val", "test"),
+# )
+# print_comparison(histories, split="val_best_per_client")   # validasi
+# print_comparison(histories, split="test_best_per_client")  # test
+# print_seed_val_test(histories, best=True)                  # val & test, mean ± std
+# print_val_test_comparison(histories["pairwise"])           # gap val vs test
+#
+# # single run:
+# h = run_federated(fed_data, "exp1", aggregation="fedprox", fedprox_mu=0.05)
