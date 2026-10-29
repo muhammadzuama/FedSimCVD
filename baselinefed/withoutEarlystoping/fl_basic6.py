@@ -18,6 +18,7 @@ from flwr.server.strategy import (FedAdagrad, FedAdam, FedAvg, FedAvgM,
 from sklearn.metrics import (accuracy_score, average_precision_score,
                              f1_score, precision_score, recall_score,
                              roc_auc_score)
+from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, TensorDataset
 
 import config
@@ -30,11 +31,16 @@ try:
 except Exception as _e:                      # ImportError / error lain di file itu
     FedCosinePairwise = None
     print(f"[peringatan] aggregation4 tidak bisa diimpor ({_e!r}); "
-          f"'fedpairwise' dinonaktifkan")
+          f"varian 'fedpairwise' dinonaktifkan")
 
-ALGOS = ('fedavg', 'fedprox', 'fedavgm',
-         'fedadam', 'fedyogi', 'fedadagrad',
-         'fedpairwise')
+# Varian fedpairwise: nama -> (temperature, data_influence)
+PW_VARIANTS = {
+    'fedpairwise_T0.01_d0.3': (0.01, 0.3),
+    'fedpairwise_T0.01_d0.5': (0.01, 0.5),
+    'fedpairwise_T0.01_d0':   (0.01, 0.0),
+}
+
+ALGOS = ('fedavg', 'fedprox', *PW_VARIANTS)
 
 # Metrik lengkap (tidak bergantung pada config.METRIK yang mungkin hanya f1/auc)
 METRIK = ['acc', 'prec', 'rec', 'f1', 'auc', 'prauc']
@@ -55,21 +61,92 @@ def get_seed():
 
 
 # ============================================================
-# 1. UTILITAS
+# 1. UTILITAS & DATA
+#    - load_data()      : data TRAINING  (hanya state di FL_STATES)
+#    - load_eval_data() : data EVALUASI  (SEMUA client, val & test)
 # ============================================================
+def _wanted_states():
+    raw = os.environ.get('FL_STATES', '').strip()
+    return {int(x) for x in raw.split(',') if x} or None
+
+
 @lru_cache(maxsize=1)
-def load_data():
-    """Muat data semua client sekali per proses -> (clients, scaler, feature_names)."""
+def _load_raw():
+    """Semua client apa adanya (scaler dari semua state). Di-cache sekali per proses."""
     d = os.environ.get('FL_CLIENT_DIR') or config.CLIENT_DIR
     return prepare_client_data(Path(d))
 
 
+def _rescale_client(c, old, new):
+    """Kembalikan X ke skala asli (scaler lama), lalu scale dengan scaler baru."""
+    out = {}
+    for k, v in c.items():
+        if k.startswith('X_'):
+            x = v.numpy().astype(np.float64) * old.scale_ + old.mean_
+            v = torch.tensor(new.transform(x), dtype=torch.float32)
+        out[k] = v
+    return out
+
+
+@lru_cache(maxsize=1)
+def load_data():
+    """DATA TRAINING: hanya state terpilih (FL_STATES); kosong = semua state.
+    Scaler di-fit hanya dari data train state terpilih."""
+    clients, scaler, names = _load_raw()
+    wanted = _wanted_states()
+    if wanted is None:
+        return clients, scaler, names
+
+    hilang = wanted - set(clients)
+    if hilang:
+        print(f"[peringatan] state diminta tapi tidak ada/kosong: {sorted(hilang)}")
+    pilih = [s for s in sorted(wanted) if s in clients]
+    if not pilih:
+        raise ValueError(f"Tidak ada state terpilih yang valid: {sorted(wanted)}")
+
+    new_scaler = StandardScaler()
+    for s in pilih:
+        x = (clients[s]['X_train_t'].numpy().astype(np.float64)
+             * scaler.scale_ + scaler.mean_)
+        new_scaler.partial_fit(x)
+
+    out = {s: _rescale_client(clients[s], scaler, new_scaler) for s in pilih}
+    return out, new_scaler, names
+
+
+@lru_cache(maxsize=1)
+def load_eval_data():
+    """DATA EVALUASI: SEMUA client (val & test), di-scale dengan scaler milik
+    client training (tanpa kebocoran dari client yang tidak ikut latih).
+    Client yang ikut latih memakai tensor yang sama (hemat memori)."""
+    raw_clients, raw_scaler, names = _load_raw()
+    if _wanted_states() is None:
+        return raw_clients, raw_scaler, names
+
+    train_clients, new_scaler, _ = load_data()
+    out = {}
+    for s in sorted(raw_clients):
+        out[s] = (train_clients[s] if s in train_clients
+                  else _rescale_client(raw_clients[s], raw_scaler, new_scaler))
+    return out, new_scaler, names
+
+
+def load_eval_clients():
+    return load_eval_data()[0]
+
+
+def clear_cache():
+    for f in (_load_raw, load_data, load_eval_data):
+        f.cache_clear()
+
+
 def load_all():
+    """Client TRAINING (dipakai Flower; urutan = partition-id)."""
     return load_data()[0]
 
 
 def state_list():
-    """Urutan state = partition-id pada simulasi."""
+    """Urutan state training = partition-id pada simulasi."""
     return list(load_all().keys())
 
 
@@ -137,6 +214,7 @@ def _finite(weights):
 
 # ============================================================
 # 2. EVALUASI (acc, prec, rec, f1, auc, prauc)
+#    Default: SEMUA client (val & test), walau training hanya sebagian.
 # ============================================================
 @torch.no_grad()
 def evaluate_model(model, X, y, criterion=None):
@@ -177,14 +255,18 @@ def weighted_metrics(results):
 
 
 def evaluate_on_clients(model, split='test', clients=None):
-    """Evaluasi per client pada split tertentu ('train' | 'val' | 'test')."""
-    clients = clients or load_all()
+    """Evaluasi per client pada SEMUA client evaluasi (bukan hanya yang ikut latih)."""
+    clients = clients or load_eval_clients()
     model = model.to(config.DEVICE)
+    latih = set(load_all().keys())
     rows = []
     for st, c in clients.items():
-        m = evaluate_model(model, c[f'X_{split}_t'], c[f'y_{split}_t'])
-        rows.append({'state': st, f'n_{split}': len(c[f'y_{split}_t']),
-                     'n_pos': int(c[f'y_{split}_t'].sum()), **m})
+        y = c[f'y_{split}_t']
+        if len(y) == 0:
+            continue
+        m = evaluate_model(model, c[f'X_{split}_t'], y)
+        rows.append({'state': st, 'ikut_latih': st in latih,
+                     f'n_{split}': len(y), 'n_pos': int(y.sum()), **m})
     return pd.DataFrame(rows).set_index('state')
 
 
@@ -201,12 +283,16 @@ def summarize(df, n_col='n_test'):
     return ringkas.rename(index=NAMA_METRIK)
 
 
-def evaluate_pooled(model, split='test', clients=None):
-    """Evaluasi data semua client digabung jadi satu."""
-    clients = clients or load_all()
+def evaluate_pooled(model, split='test', clients=None, states=None):
+    """Gabungkan data client (semua, atau hanya `states`) jadi satu lalu evaluasi."""
+    clients = clients or load_eval_clients()
     model = model.to(config.DEVICE)
-    X = torch.cat([c[f'X_{split}_t'] for c in clients.values()])
-    y = torch.cat([c[f'y_{split}_t'] for c in clients.values()])
+    ks = [s for s, c in clients.items()
+          if (states is None or s in states) and len(c[f'y_{split}_t']) > 0]
+    if not ks:
+        return {k: float('nan') for k in METRIK}
+    X = torch.cat([clients[s][f'X_{split}_t'] for s in ks])
+    y = torch.cat([clients[s][f'y_{split}_t'] for s in ks])
     return evaluate_model(model, X, y)
 
 
@@ -225,36 +311,54 @@ def load_final_model(path=None):
 
 def full_report(model=None, splits=('val', 'test'), save=True, verbose=True):
     """
-    Evaluasi model global pada SEMUA client untuk tiap split (val & test):
-    acc, precision, recall, F1, ROC-AUC, PR-AUC.
+    Evaluasi model global pada SEMUA client (mis. 44) untuk tiap split,
+    walau training hanya memakai sebagian (mis. 10).
 
-    Output (disimpan di OUT_DIR bila save=True):
-      eval_{split}_per_client.csv   -> metrik tiap client
-      eval_{split}_ringkasan.csv    -> makro / berbobot / std / min / max
-      eval_val_vs_test.csv          -> perbandingan val vs test (pooled & makro)
-    Return: dict {split: {'per_client', 'ringkasan', 'pooled'}, 'val_vs_test': df}
+    res[split] = {'per_client', 'ringkas', 'pooled',
+                  'pooled_group': {'latih': {...}, 'non_latih': {...}},
+                  'group_makro': DataFrame}
+    Output CSV (bila save=True) di OUT_DIR:
+      eval_{split}_per_client.csv, eval_{split}_ringkasan.csv,
+      eval_{split}_per_grup.csv, eval_val_vs_test.csv
     """
     if model is None:
         model = load_final_model()
     config.ensure_out_dir()
-    clients = load_all()
+    clients = load_eval_clients()
+    latih = set(load_all().keys())
+    non_latih = set(clients) - latih
     res = {}
     for sp in splits:
         per = evaluate_on_clients(model, sp, clients)
         ring = summarize(per, n_col=f'n_{sp}')
         pooled = evaluate_pooled(model, sp, clients)
-        res[sp] = {'per_client': per, 'ringkas': ring, 'pooled': pooled}
+        pooled_g = {
+            'latih':     evaluate_pooled(model, sp, clients, latih),
+            'non_latih': evaluate_pooled(model, sp, clients, non_latih),
+        }
+        group = per.groupby('ikut_latih')[METRIK].mean()
+        group.index = group.index.map({True: 'client ikut latih',
+                                       False: 'client TIDAK ikut latih'})
+        res[sp] = {'per_client': per, 'ringkas': ring, 'pooled': pooled,
+                   'pooled_group': pooled_g, 'group_makro': group}
 
         if save:
             per.to_csv(config.OUT_DIR / f'eval_{sp}_per_client.csv')
             ring.to_csv(config.OUT_DIR / f'eval_{sp}_ringkasan.csv')
+            group.to_csv(config.OUT_DIR / f'eval_{sp}_per_grup.csv')
         if verbose:
-            print(f"\n{'=' * 70}\nEVALUASI {sp.upper()} - per client\n{'=' * 70}")
+            print(f"\n{'=' * 70}\nEVALUASI {sp.upper()} - per client "
+                  f"({len(per)} client; {len(latih)} ikut latih)\n{'=' * 70}")
             print(per.round(4).to_string())
-            print(f"\n--- Ringkasan {sp.upper()} ---")
+            print(f"\n--- Ringkasan {sp.upper()} (semua client) ---")
             print(ring.round(4).to_string())
+            print(f"\n--- Makro per grup {sp.upper()} ---")
+            print(group.round(4).to_string())
             print(f"\n--- Pooled {sp.upper()} (semua client digabung) ---")
             print("  ".join(f"{NAMA_METRIK[k]}={pooled[k]:.4f}" for k in METRIK))
+            for g, p in pooled_g.items():
+                print(f"  [{g:<9}] " + "  ".join(
+                    f"{NAMA_METRIK[k]}={p[k]:.4f}" for k in METRIK))
 
     # tabel perbandingan val vs test
     cols = {}
@@ -279,6 +383,7 @@ def full_report(model=None, splits=('val', 'test'), save=True, verbose=True):
 class FlowerClient(NumPyClient):
     def __init__(self, st, data):
         self.st = st
+        torch.set_num_threads(1)          # 1 core per actor, hindari oversubscription
         dev = config.DEVICE
         self.X_tr, self.y_tr = data['X_train_t'].float(), data['y_train_t'].long()
         self.X_va, self.y_va = data['X_val_t'].float(), data['y_val_t'].long()
@@ -339,7 +444,7 @@ class FlowerClient(NumPyClient):
             raise
 
     def evaluate(self, parameters, cfg):
-        """Evaluasi pada data VALIDASI client; kirim semua 6 metrik ke server."""
+        """Evaluasi pada data VALIDASI client training; kirim semua 6 metrik ke server."""
         try:
             set_weights(self.model, parameters)
             m = evaluate_model(self.model, self.X_va, self.y_va, self.criterion)
@@ -369,6 +474,7 @@ class BandwidthMixin:
     Log tiap ronde -> OUT_DIR/ronde_log.csv   (val_loss + 6 metrik val berbobot)
     Log per client -> OUT_DIR/ronde_val_per_client.csv
     Bobot global terakhir -> OUT_DIR/final_params.npz
+    (Log per ronde = client TRAINING saja; evaluasi semua client ada di full_report.)
     """
 
     def __init__(self, *args, **kwargs):
@@ -452,7 +558,11 @@ class BandwidthMixin:
 
 def make_strategy(algo, init, n_clients, model):
     """Bangun strategy sesuai nama algoritma."""
-    algo = algo.lower()
+    algo = algo.lower() if algo not in ALGOS else algo
+    # nama varian pairwise memuat 'T' besar, jadi cocokkan tanpa peduli huruf besar/kecil
+    if algo not in ALGOS:
+        alias = {a.lower(): a for a in ALGOS}
+        algo = alias.get(algo.lower(), algo)
     if algo not in ALGOS:
         raise ValueError(f"algo '{algo}' tidak dikenal, pilih salah satu: {ALGOS}")
 
@@ -480,15 +590,16 @@ def make_strategy(algo, init, n_clients, model):
         return cls(server_learning_rate=float(_cfg('SERVER_LR', 1.0)),
                    server_momentum=float(_cfg('SERVER_MOMENTUM', 0.9)), **common)
 
-    if algo == 'fedpairwise':
+    if algo in PW_VARIANTS:
         if FedCosinePairwise is None:
             raise ImportError("aggregation4.FedCosinePairwise tidak tersedia; "
                               "pastikan aggregation4.py ada di folder yang sama.")
+        temp, d_inf = PW_VARIANTS[algo]
         cls = type('FedPairwiseBandwidth', (BandwidthMixin, FedCosinePairwise), {})
-        pw = dict(temperature=float(_cfg('PAIRWISE_TEMPERATURE', 0.01)),
+        pw = dict(temperature=float(temp),
                   min_weight=float(_cfg('PAIRWISE_MIN_WEIGHT', 0.0)),
                   similarity_agg=_cfg('PAIRWISE_SIM_AGG', 'mean'),
-                  data_influence=float(_cfg('PAIRWISE_DATA_INFLUENCE', 0.3)))
+                  data_influence=float(d_inf))
         if 'use_delta' in inspect.signature(FedCosinePairwise.__init__).parameters:
             pw['use_delta'] = bool(_cfg('PAIRWISE_USE_DELTA', True))
         else:
