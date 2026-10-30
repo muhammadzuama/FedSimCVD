@@ -326,13 +326,9 @@ class FedCosinePairwise(FedAvg):
         # Ini baru dilakukan SETELAH bobot dari pairwise
         # similarity didapat -- bukan sebelum, seperti versi lama.
         # ----------------------------------------------------
-
         num_layers = len(client_ndarrays[0])
-
         aggregated_ndarrays: List[np.ndarray] = []
-
         for layer_idx in range(num_layers):
-
             layer_stack = np.stack(
                 [
                     client_ndarrays[client_idx][layer_idx]
@@ -340,19 +336,15 @@ class FedCosinePairwise(FedAvg):
                 ],
                 axis=0,
             )
-
             weight_shape = [-1] + [1] * (layer_stack.ndim - 1)
             reshaped_weights = weights.reshape(weight_shape)
-
             aggregated_layer = np.sum(
                 layer_stack * reshaped_weights,
                 axis=0,
             )
-
             aggregated_layer = aggregated_layer.astype(
                 client_ndarrays[0][layer_idx].dtype
             )
-
             aggregated_ndarrays.append(aggregated_layer)
 
         aggregated_parameters = ndarrays_to_parameters(aggregated_ndarrays)
@@ -374,14 +366,11 @@ class FedCosinePairwise(FedAvg):
         # ----------------------------------------------------
         # 9. Catat skor & bobot tiap client untuk monitoring
         # ----------------------------------------------------
-
         for idx, (_, fit_res) in enumerate(results):
-
             client_name = fit_res.metrics.get(
                 "client_name",
                 f"client_{idx}",
             )
-
             aggregated_metrics[
                 f"pairwise_sim_score_{client_name}"
             ] = float(scores[idx])
@@ -394,9 +383,5 @@ class FedCosinePairwise(FedAvg):
                 aggregated_metrics[
                     f"data_share_{client_name}"
                 ] = float(self.last_data_shares[idx])
-
-        # ----------------------------------------------------
-        # 10. Return hasil agregasi
-        # ----------------------------------------------------
 
         return aggregated_parameters, aggregated_metrics
