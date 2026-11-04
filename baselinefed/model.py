@@ -41,7 +41,7 @@ class ClassifierHead(nn.Module):
 
 class FFNNModel(nn.Module):
     """Model gabungan: theta (FeatureExtractor) + phi (ClassifierHead)."""
-
+    
     def __init__(self, in_dim, num_classes=2):
         super().__init__()
         self.theta = FeatureExtractor(in_dim=in_dim)
@@ -54,17 +54,6 @@ class FFNNModel(nn.Module):
 
 
 def build_model(in_dim, num_classes=2, seed=42):
-    """
-    Helper untuk membangun model dengan seed tetap agar reproducible.
-
-    Args:
-        in_dim (int): dimensi fitur input (mis. X_train_t.shape[1]).
-        num_classes (int): jumlah kelas output.
-        seed (int): random seed untuk inisialisasi bobot.
-
-    Returns:
-        FFNNModel
-    """
     torch.manual_seed(seed)
     model = FFNNModel(in_dim=in_dim, num_classes=num_classes)
     return model
