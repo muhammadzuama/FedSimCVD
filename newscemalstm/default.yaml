@@ -1,0 +1,33 @@
+# Salin nilai dari config.py lama (LR, BATCH_SIZE, LOCAL_EPOCHS, NUM_ROUNDS, FRACTION_FIT, ...).
+# Tulis angka desimal biasa (0.001), bukan 1e-3 (YAML 1.1 membacanya sebagai string).
+
+algo: fedavg                 # nama varian di bawah, atau tipe: fedavg/fedprox/fedavgm/fedadam/...
+seed: 42
+out_root: outputs
+client_dir: data/clients
+states: []                   # kosong = semua state ikut latih; contoh: [1, 2, 3]
+
+device: cpu
+lr: 0.001
+batch_size: 64
+local_epochs: 1
+num_rounds: 20
+fraction_fit: 1.0
+deterministic: false
+
+variants:
+  fedprox:
+    type: fedprox
+    mu: 0.01
+
+  fedpairwise_T0.01_d0.3: {type: fedpairwise, temperature: 0.01, data_influence: 0.3}
+  fedpairwise_T0.01_d0.5: {type: fedpairwise, temperature: 0.01, data_influence: 0.5}
+  fedpairwise_T0.01_d0:   {type: fedpairwise, temperature: 0.01, data_influence: 0.0}
+  # opsional per varian: min_weight (0.0), similarity_agg (mean), use_delta (true)
+
+  fedsim_g3: {type: fedsim, num_groups: 3, group_weighting: uniform}
+  fedsim_g5: {type: fedsim, num_groups: 5, group_weighting: uniform}
+  # opsional: pca_variance (0.95)
+
+  # contoh varian FedOpt (sebelumnya dead code di make_strategy lama):
+  fedadam_default: {type: fedadam, eta: 0.01, beta_1: 0.9, beta_2: 0.99, tau: 0.001}
