@@ -1,0 +1,550 @@
+[server] algoritma agregasi: fedavg | seed: 42
+[ronde 01] VAL acc 0.5351 | prec 0.2854 | rec 0.6107 | F1 0.3884 | AUC 0.5834 | PR-AUC 0.3018 | bw 1.471 MB
+[ronde 02] VAL acc 0.5057 | prec 0.2918 | rec 0.7293 | F1 0.4164 | AUC 0.6297 | PR-AUC 0.3427 | bw 1.471 MB
+[ronde 03] VAL acc 0.5897 | prec 0.3389 | rec 0.7287 | F1 0.4620 | AUC 0.6847 | PR-AUC 0.3957 | bw 1.471 MB
+[ronde 04] VAL acc 0.6352 | prec 0.3631 | rec 0.6699 | F1 0.4704 | AUC 0.6951 | PR-AUC 0.4098 | bw 1.471 MB
+[ronde 05] VAL acc 0.6054 | prec 0.3498 | rec 0.7321 | F1 0.4730 | AUC 0.7007 | PR-AUC 0.4141 | bw 1.471 MB
+[ronde 06] VAL acc 0.6185 | prec 0.3573 | rec 0.7219 | F1 0.4777 | AUC 0.7072 | PR-AUC 0.4208 | bw 1.471 MB
+[ronde 07] VAL acc 0.6333 | prec 0.3678 | rec 0.7157 | F1 0.4855 | AUC 0.7142 | PR-AUC 0.4315 | bw 1.471 MB
+[ronde 08] VAL acc 0.6174 | prec 0.3610 | rec 0.7545 | F1 0.4881 | AUC 0.7209 | PR-AUC 0.4370 | bw 1.471 MB
+[ronde 09] VAL acc 0.6602 | prec 0.3857 | rec 0.6840 | F1 0.4930 | AUC 0.7269 | PR-AUC 0.4464 | bw 1.471 MB
+[ronde 10] VAL acc 0.6458 | prec 0.3784 | rec 0.7244 | F1 0.4969 | AUC 0.7268 | PR-AUC 0.4419 | bw 1.471 MB
+[server] algoritma agregasi: fedprox | seed: 42
+[ronde 01] VAL acc 0.7556 | prec 0.3454 | rec 0.0173 | F1 0.0328 | AUC 0.5643 | PR-AUC 0.2861 | bw 1.471 MB
+[ronde 02] VAL acc 0.6339 | prec 0.2965 | rec 0.3748 | F1 0.3303 | AUC 0.5844 | PR-AUC 0.2987 | bw 1.471 MB
+[ronde 03] VAL acc 0.5275 | prec 0.2872 | rec 0.6431 | F1 0.3967 | AUC 0.5966 | PR-AUC 0.3112 | bw 1.471 MB
+[ronde 04] VAL acc 0.5699 | prec 0.3218 | rec 0.7023 | F1 0.4409 | AUC 0.6604 | PR-AUC 0.3667 | bw 1.471 MB
+[ronde 05] VAL acc 0.6403 | prec 0.3579 | rec 0.6135 | F1 0.4515 | AUC 0.6750 | PR-AUC 0.3873 | bw 1.471 MB
+[ronde 06] VAL acc 0.6004 | prec 0.3422 | rec 0.7032 | F1 0.4597 | AUC 0.6831 | PR-AUC 0.3927 | bw 1.471 MB
+[ronde 07] VAL acc 0.6304 | prec 0.3608 | rec 0.6802 | F1 0.4709 | AUC 0.6925 | PR-AUC 0.4028 | bw 1.471 MB
+[ronde 08] VAL acc 0.6136 | prec 0.3518 | rec 0.7071 | F1 0.4695 | AUC 0.6978 | PR-AUC 0.4050 | bw 1.471 MB
+[ronde 09] VAL acc 0.6194 | prec 0.3557 | rec 0.7071 | F1 0.4730 | AUC 0.7054 | PR-AUC 0.4130 | bw 1.471 MB
+[ronde 10] VAL acc 0.6475 | prec 0.3731 | rec 0.6724 | F1 0.4794 | AUC 0.7121 | PR-AUC 0.4226 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.3 | seed: 42
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 29=0.124, 54=0.115, 5=0.130, 41=0.126, 10=0.116, 33=0.117, 19=0.061, 39=0.043, 23=0.086, 13=0.083
+[ronde 01] VAL acc 0.5230 | prec 0.2852 | rec 0.6443 | F1 0.3950 | AUC 0.5839 | PR-AUC 0.2978 | bw 1.471 MB
+[ronde 02] bobot agregasi: 29=0.100, 19=0.083, 54=0.114, 23=0.110, 10=0.095, 5=0.124, 13=0.108, 39=0.056, 33=0.095, 41=0.115
+[ronde 02] VAL acc 0.5382 | prec 0.2899 | rec 0.6276 | F1 0.3963 | AUC 0.6163 | PR-AUC 0.3229 | bw 1.471 MB
+[ronde 03] bobot agregasi: 54=0.106, 41=0.097, 29=0.099, 5=0.112, 10=0.093, 39=0.081, 19=0.099, 23=0.107, 13=0.110, 33=0.096
+[ronde 03] VAL acc 0.6127 | prec 0.3432 | rec 0.6563 | F1 0.4503 | AUC 0.6693 | PR-AUC 0.3775 | bw 1.471 MB
+[ronde 04] bobot agregasi: 5=0.097, 13=0.098, 39=0.080, 41=0.096, 10=0.093, 29=0.106, 23=0.116, 54=0.106, 19=0.111, 33=0.096
+[ronde 04] VAL acc 0.6346 | prec 0.3612 | rec 0.6641 | F1 0.4675 | AUC 0.6857 | PR-AUC 0.3930 | bw 1.471 MB
+[ronde 05] bobot agregasi: 13=0.104, 39=0.092, 23=0.110, 29=0.099, 41=0.093, 10=0.092, 33=0.103, 54=0.101, 19=0.107, 5=0.101
+[ronde 05] VAL acc 0.6135 | prec 0.3525 | rec 0.7154 | F1 0.4720 | AUC 0.6967 | PR-AUC 0.4075 | bw 1.471 MB
+[ronde 06] bobot agregasi: 41=0.090, 39=0.095, 29=0.101, 19=0.105, 33=0.102, 13=0.107, 23=0.112, 10=0.088, 54=0.104, 5=0.094
+[ronde 06] VAL acc 0.6267 | prec 0.3617 | rec 0.7081 | F1 0.4785 | AUC 0.7045 | PR-AUC 0.4171 | bw 1.471 MB
+[ronde 07] bobot agregasi: 33=0.095, 13=0.105, 29=0.100, 54=0.102, 39=0.100, 19=0.108, 41=0.091, 5=0.099, 10=0.087, 23=0.113
+[ronde 07] VAL acc 0.6392 | prec 0.3690 | rec 0.6928 | F1 0.4812 | AUC 0.7113 | PR-AUC 0.4268 | bw 1.471 MB
+[ronde 08] bobot agregasi: 19=0.108, 29=0.101, 13=0.105, 23=0.108, 39=0.104, 54=0.099, 41=0.091, 5=0.097, 10=0.088, 33=0.098
+[ronde 08] VAL acc 0.6256 | prec 0.3649 | rec 0.7378 | F1 0.4880 | AUC 0.7183 | PR-AUC 0.4351 | bw 1.471 MB
+[ronde 09] bobot agregasi: 41=0.091, 5=0.100, 19=0.104, 39=0.107, 13=0.107, 23=0.108, 54=0.099, 29=0.099, 33=0.097, 10=0.089
+[ronde 09] VAL acc 0.6535 | prec 0.3817 | rec 0.6991 | F1 0.4935 | AUC 0.7233 | PR-AUC 0.4429 | bw 1.471 MB
+[ronde 10] bobot agregasi: 13=0.105, 5=0.100, 41=0.088, 23=0.106, 29=0.096, 33=0.098, 10=0.089, 19=0.107, 54=0.100, 39=0.111
+[ronde 10] VAL acc 0.6400 | prec 0.3748 | rec 0.7313 | F1 0.4953 | AUC 0.7235 | PR-AUC 0.4401 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.5 | seed: 42
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 41=0.105, 5=0.119, 39=0.071, 33=0.107, 54=0.109, 23=0.100, 10=0.096, 13=0.096, 29=0.118, 19=0.079
+[ronde 01] VAL acc 0.5237 | prec 0.2841 | rec 0.6366 | F1 0.3924 | AUC 0.5841 | PR-AUC 0.2999 | bw 1.471 MB
+[ronde 02] bobot agregasi: 54=0.108, 19=0.093, 10=0.085, 23=0.123, 13=0.112, 5=0.111, 41=0.095, 39=0.082, 33=0.093, 29=0.099
+[ronde 02] VAL acc 0.5385 | prec 0.2903 | rec 0.6293 | F1 0.3971 | AUC 0.6153 | PR-AUC 0.3233 | bw 1.471 MB
+[ronde 03] bobot agregasi: 5=0.103, 29=0.092, 10=0.079, 39=0.119, 23=0.116, 13=0.112, 54=0.100, 19=0.106, 33=0.088, 41=0.085
+[ronde 03] VAL acc 0.6327 | prec 0.3534 | rec 0.6233 | F1 0.4507 | AUC 0.6719 | PR-AUC 0.3793 | bw 1.471 MB
+[ronde 04] bobot agregasi: 41=0.084, 23=0.124, 19=0.115, 39=0.104, 10=0.080, 13=0.105, 29=0.101, 33=0.091, 5=0.095, 54=0.101
+[ronde 04] VAL acc 0.6316 | prec 0.3593 | rec 0.6674 | F1 0.4668 | AUC 0.6881 | PR-AUC 0.3967 | bw 1.471 MB
+[ronde 05] bobot agregasi: 33=0.095, 5=0.095, 54=0.096, 23=0.118, 39=0.116, 41=0.082, 10=0.078, 19=0.113, 13=0.111, 29=0.096
+[ronde 05] VAL acc 0.6079 | prec 0.3504 | rec 0.7280 | F1 0.4729 | AUC 0.6988 | PR-AUC 0.4104 | bw 1.471 MB
+[ronde 06] bobot agregasi: 41=0.081, 10=0.076, 54=0.098, 33=0.094, 39=0.121, 13=0.113, 19=0.108, 5=0.092, 29=0.098, 23=0.120
+[ronde 06] VAL acc 0.6297 | prec 0.3632 | rec 0.7046 | F1 0.4791 | AUC 0.7070 | PR-AUC 0.4211 | bw 1.471 MB
+[ronde 07] bobot agregasi: 39=0.127, 41=0.081, 5=0.094, 29=0.096, 54=0.096, 10=0.075, 19=0.110, 33=0.089, 13=0.111, 23=0.119
+[ronde 07] VAL acc 0.6350 | prec 0.3676 | rec 0.7073 | F1 0.4834 | AUC 0.7148 | PR-AUC 0.4303 | bw 1.471 MB
+[ronde 08] bobot agregasi: 13=0.109, 5=0.092, 54=0.096, 23=0.116, 33=0.091, 41=0.080, 29=0.098, 19=0.111, 39=0.131, 10=0.076
+[ronde 08] VAL acc 0.6233 | prec 0.3650 | rec 0.7526 | F1 0.4913 | AUC 0.7208 | PR-AUC 0.4374 | bw 1.471 MB
+[ronde 09] bobot agregasi: 54=0.096, 29=0.096, 13=0.110, 19=0.108, 33=0.091, 39=0.132, 41=0.080, 23=0.116, 5=0.095, 10=0.077
+[ronde 09] VAL acc 0.6226 | prec 0.3655 | rec 0.7602 | F1 0.4934 | AUC 0.7243 | PR-AUC 0.4414 | bw 1.471 MB
+[ronde 10] bobot agregasi: 10=0.077, 13=0.109, 19=0.109, 54=0.097, 33=0.091, 41=0.079, 39=0.134, 23=0.115, 5=0.094, 29=0.094
+[ronde 10] VAL acc 0.6295 | prec 0.3705 | rec 0.7599 | F1 0.4978 | AUC 0.7249 | PR-AUC 0.4385 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0 | seed: 42
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 19=0.042, 29=0.128, 23=0.062, 33=0.125, 54=0.117, 5=0.142, 39=0.021, 13=0.062, 10=0.144, 41=0.157
+[ronde 01] VAL acc 0.5335 | prec 0.2908 | rec 0.6443 | F1 0.4003 | AUC 0.5818 | PR-AUC 0.2960 | bw 1.471 MB
+[ronde 02] bobot agregasi: 39=0.031, 23=0.085, 5=0.140, 54=0.128, 29=0.103, 19=0.065, 13=0.088, 33=0.104, 10=0.109, 41=0.146
+[ronde 02] VAL acc 0.5364 | prec 0.2891 | rec 0.6289 | F1 0.3958 | AUC 0.6168 | PR-AUC 0.3239 | bw 1.471 MB
+[ronde 03] bobot agregasi: 5=0.126, 39=0.054, 19=0.088, 10=0.109, 23=0.088, 13=0.102, 41=0.120, 54=0.115, 33=0.096, 29=0.101
+[ronde 03] VAL acc 0.6004 | prec 0.3368 | rec 0.6710 | F1 0.4482 | AUC 0.6657 | PR-AUC 0.3747 | bw 1.471 MB
+[ronde 04] bobot agregasi: 39=0.052, 29=0.109, 54=0.113, 33=0.103, 5=0.103, 41=0.117, 10=0.112, 23=0.101, 19=0.101, 13=0.088
+[ronde 04] VAL acc 0.6457 | prec 0.3664 | rec 0.6360 | F1 0.4644 | AUC 0.6822 | PR-AUC 0.3900 | bw 1.471 MB
+[ronde 05] bobot agregasi: 54=0.107, 5=0.107, 13=0.091, 10=0.112, 23=0.101, 41=0.112, 39=0.060, 19=0.099, 29=0.102, 33=0.110
+[ronde 05] VAL acc 0.6129 | prec 0.3515 | rec 0.7105 | F1 0.4700 | AUC 0.6947 | PR-AUC 0.4036 | bw 1.471 MB
+[ronde 06] bobot agregasi: 10=0.109, 5=0.097, 54=0.112, 41=0.105, 29=0.105, 33=0.113, 19=0.096, 39=0.063, 23=0.102, 13=0.099
+[ronde 06] VAL acc 0.6281 | prec 0.3601 | rec 0.6903 | F1 0.4731 | AUC 0.7021 | PR-AUC 0.4118 | bw 1.471 MB
+[ronde 07] bobot agregasi: 23=0.103, 41=0.108, 29=0.102, 5=0.105, 39=0.070, 19=0.100, 54=0.109, 13=0.094, 10=0.106, 33=0.103
+[ronde 07] VAL acc 0.6347 | prec 0.3666 | rec 0.6991 | F1 0.4806 | AUC 0.7073 | PR-AUC 0.4200 | bw 1.471 MB
+[ronde 08] bobot agregasi: 33=0.106, 29=0.104, 19=0.102, 39=0.071, 5=0.100, 13=0.096, 41=0.110, 54=0.105, 10=0.107, 23=0.098
+[ronde 08] VAL acc 0.6114 | prec 0.3566 | rec 0.7536 | F1 0.4839 | AUC 0.7142 | PR-AUC 0.4292 | bw 1.471 MB
+[ronde 09] bobot agregasi: 23=0.097, 54=0.106, 33=0.105, 13=0.096, 39=0.075, 10=0.110, 41=0.109, 19=0.097, 29=0.101, 5=0.105
+[ronde 09] VAL acc 0.6450 | prec 0.3757 | rec 0.7080 | F1 0.4906 | AUC 0.7208 | PR-AUC 0.4371 | bw 1.471 MB
+[ronde 10] bobot agregasi: 41=0.104, 23=0.096, 5=0.106, 19=0.099, 10=0.110, 54=0.106, 13=0.096, 33=0.109, 39=0.077, 29=0.096
+[ronde 10] VAL acc 0.6449 | prec 0.3781 | rec 0.7266 | F1 0.4971 | AUC 0.7230 | PR-AUC 0.4383 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g3 | seed: 42
+[ronde 01] VAL acc 0.5360 | prec 0.2880 | rec 0.6210 | F1 0.3929 | AUC 0.5817 | PR-AUC 0.3001 | bw 1.471 MB
+[ronde 02] VAL acc 0.5093 | prec 0.2915 | rec 0.7175 | F1 0.4141 | AUC 0.6270 | PR-AUC 0.3446 | bw 1.471 MB
+[ronde 03] VAL acc 0.6167 | prec 0.3505 | rec 0.6818 | F1 0.4624 | AUC 0.6865 | PR-AUC 0.4007 | bw 1.471 MB
+[ronde 04] VAL acc 0.6185 | prec 0.3550 | rec 0.7056 | F1 0.4720 | AUC 0.6989 | PR-AUC 0.4150 | bw 1.471 MB
+[ronde 05] VAL acc 0.6114 | prec 0.3531 | rec 0.7283 | F1 0.4753 | AUC 0.7061 | PR-AUC 0.4230 | bw 1.471 MB
+[ronde 06] VAL acc 0.6178 | prec 0.3594 | rec 0.7417 | F1 0.4839 | AUC 0.7125 | PR-AUC 0.4272 | bw 1.471 MB
+[ronde 07] VAL acc 0.6464 | prec 0.3747 | rec 0.6899 | F1 0.4854 | AUC 0.7179 | PR-AUC 0.4360 | bw 1.471 MB
+[ronde 08] VAL acc 0.6156 | prec 0.3619 | rec 0.7701 | F1 0.4921 | AUC 0.7266 | PR-AUC 0.4436 | bw 1.471 MB
+[ronde 09] VAL acc 0.6378 | prec 0.3741 | rec 0.7399 | F1 0.4966 | AUC 0.7314 | PR-AUC 0.4557 | bw 1.471 MB
+[ronde 10] VAL acc 0.6418 | prec 0.3760 | rec 0.7266 | F1 0.4950 | AUC 0.7304 | PR-AUC 0.4501 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g5 | seed: 42
+[ronde 01] VAL acc 0.5209 | prec 0.2847 | rec 0.6470 | F1 0.3950 | AUC 0.5828 | PR-AUC 0.3008 | bw 1.471 MB
+[ronde 02] VAL acc 0.4974 | prec 0.2880 | rec 0.7302 | F1 0.4126 | AUC 0.6171 | PR-AUC 0.3307 | bw 1.471 MB
+[ronde 03] VAL acc 0.6146 | prec 0.3483 | rec 0.6770 | F1 0.4593 | AUC 0.6827 | PR-AUC 0.3949 | bw 1.471 MB
+[ronde 04] VAL acc 0.6219 | prec 0.3578 | rec 0.7049 | F1 0.4741 | AUC 0.6958 | PR-AUC 0.4095 | bw 1.471 MB
+[ronde 05] VAL acc 0.5952 | prec 0.3456 | rec 0.7526 | F1 0.4733 | AUC 0.7012 | PR-AUC 0.4132 | bw 1.471 MB
+[ronde 06] VAL acc 0.6153 | prec 0.3551 | rec 0.7242 | F1 0.4763 | AUC 0.7076 | PR-AUC 0.4218 | bw 1.471 MB
+[ronde 07] VAL acc 0.6327 | prec 0.3667 | rec 0.7149 | F1 0.4844 | AUC 0.7141 | PR-AUC 0.4324 | bw 1.471 MB
+[ronde 08] VAL acc 0.5912 | prec 0.3483 | rec 0.7908 | F1 0.4834 | AUC 0.7144 | PR-AUC 0.4276 | bw 1.471 MB
+[ronde 09] VAL acc 0.6523 | prec 0.3807 | rec 0.6998 | F1 0.4929 | AUC 0.7265 | PR-AUC 0.4447 | bw 1.471 MB
+[ronde 10] VAL acc 0.6170 | prec 0.3617 | rec 0.7634 | F1 0.4906 | AUC 0.7283 | PR-AUC 0.4461 | bw 1.471 MB
+[server] algoritma agregasi: fedavg | seed: 0
+[ronde 01] VAL acc 0.5272 | prec 0.2862 | rec 0.6371 | F1 0.3945 | AUC 0.5904 | PR-AUC 0.3030 | bw 1.471 MB
+[ronde 02] VAL acc 0.5816 | prec 0.3315 | rec 0.7122 | F1 0.4518 | AUC 0.6629 | PR-AUC 0.3654 | bw 1.471 MB
+[ronde 03] VAL acc 0.5739 | prec 0.3303 | rec 0.7359 | F1 0.4553 | AUC 0.6727 | PR-AUC 0.3718 | bw 1.471 MB
+[ronde 04] VAL acc 0.6383 | prec 0.3618 | rec 0.6391 | F1 0.4612 | AUC 0.6820 | PR-AUC 0.3857 | bw 1.471 MB
+[ronde 05] VAL acc 0.5927 | prec 0.3426 | rec 0.7392 | F1 0.4674 | AUC 0.6877 | PR-AUC 0.3880 | bw 1.471 MB
+[ronde 06] VAL acc 0.5934 | prec 0.3429 | rec 0.7371 | F1 0.4674 | AUC 0.6922 | PR-AUC 0.3950 | bw 1.471 MB
+[ronde 07] VAL acc 0.6055 | prec 0.3489 | rec 0.7208 | F1 0.4695 | AUC 0.6942 | PR-AUC 0.3967 | bw 1.471 MB
+[ronde 08] VAL acc 0.5955 | prec 0.3459 | rec 0.7466 | F1 0.4721 | AUC 0.6964 | PR-AUC 0.3990 | bw 1.471 MB
+[ronde 09] VAL acc 0.5902 | prec 0.3442 | rec 0.7621 | F1 0.4737 | AUC 0.6990 | PR-AUC 0.3988 | bw 1.471 MB
+[ronde 10] VAL acc 0.6093 | prec 0.3534 | rec 0.7384 | F1 0.4774 | AUC 0.7014 | PR-AUC 0.4035 | bw 1.471 MB
+[server] algoritma agregasi: fedprox | seed: 0
+[ronde 01] VAL acc 0.5372 | prec 0.2788 | rec 0.5717 | F1 0.3741 | AUC 0.5770 | PR-AUC 0.2937 | bw 1.471 MB
+[ronde 02] VAL acc 0.5364 | prec 0.2846 | rec 0.6035 | F1 0.3862 | AUC 0.5953 | PR-AUC 0.3063 | bw 1.471 MB
+[ronde 03] VAL acc 0.5772 | prec 0.3257 | rec 0.6958 | F1 0.4431 | AUC 0.6554 | PR-AUC 0.3544 | bw 1.471 MB
+[ronde 04] VAL acc 0.6415 | prec 0.3555 | rec 0.5890 | F1 0.4425 | AUC 0.6706 | PR-AUC 0.3736 | bw 1.471 MB
+[ronde 05] VAL acc 0.5763 | prec 0.3311 | rec 0.7302 | F1 0.4548 | AUC 0.6742 | PR-AUC 0.3751 | bw 1.471 MB
+[ronde 06] VAL acc 0.5984 | prec 0.3405 | rec 0.6988 | F1 0.4571 | AUC 0.6799 | PR-AUC 0.3845 | bw 1.471 MB
+[ronde 07] VAL acc 0.5654 | prec 0.3289 | rec 0.7597 | F1 0.4584 | AUC 0.6813 | PR-AUC 0.3838 | bw 1.471 MB
+[ronde 08] VAL acc 0.5724 | prec 0.3315 | rec 0.7492 | F1 0.4588 | AUC 0.6851 | PR-AUC 0.3888 | bw 1.471 MB
+[ronde 09] VAL acc 0.5598 | prec 0.3285 | rec 0.7785 | F1 0.4613 | AUC 0.6882 | PR-AUC 0.3912 | bw 1.471 MB
+[ronde 10] VAL acc 0.5982 | prec 0.3444 | rec 0.7233 | F1 0.4657 | AUC 0.6911 | PR-AUC 0.3950 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.3 | seed: 0
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 13=0.070, 5=0.117, 10=0.126, 39=0.030, 23=0.099, 29=0.124, 19=0.062, 33=0.090, 54=0.135, 41=0.148
+[ronde 01] VAL acc 0.5337 | prec 0.2846 | rec 0.6106 | F1 0.3877 | AUC 0.5993 | PR-AUC 0.3092 | bw 1.471 MB
+[ronde 02] bobot agregasi: 13=0.110, 33=0.088, 41=0.103, 39=0.097, 19=0.092, 54=0.112, 29=0.100, 10=0.090, 23=0.102, 5=0.104
+[ronde 02] VAL acc 0.5772 | prec 0.3265 | rec 0.6996 | F1 0.4447 | AUC 0.6598 | PR-AUC 0.3629 | bw 1.471 MB
+[ronde 03] bobot agregasi: 13=0.107, 10=0.089, 5=0.099, 19=0.101, 39=0.097, 29=0.099, 33=0.095, 41=0.095, 54=0.102, 23=0.116
+[ronde 03] VAL acc 0.5290 | prec 0.3126 | rec 0.7855 | F1 0.4466 | AUC 0.6695 | PR-AUC 0.3706 | bw 1.471 MB
+[ronde 04] bobot agregasi: 41=0.093, 13=0.105, 39=0.100, 23=0.114, 19=0.106, 54=0.100, 5=0.098, 10=0.086, 33=0.097, 29=0.101
+[ronde 04] VAL acc 0.6550 | prec 0.3662 | rec 0.5757 | F1 0.4466 | AUC 0.6799 | PR-AUC 0.3859 | bw 1.471 MB
+[ronde 05] bobot agregasi: 29=0.097, 10=0.089, 41=0.095, 23=0.110, 13=0.109, 33=0.098, 39=0.098, 19=0.105, 5=0.098, 54=0.102
+[ronde 05] VAL acc 0.5851 | prec 0.3377 | rec 0.7371 | F1 0.4625 | AUC 0.6837 | PR-AUC 0.3854 | bw 1.471 MB
+[ronde 06] bobot agregasi: 19=0.108, 54=0.103, 13=0.104, 33=0.095, 23=0.106, 41=0.091, 39=0.109, 10=0.088, 29=0.099, 5=0.097
+[ronde 06] VAL acc 0.6064 | prec 0.3481 | rec 0.7101 | F1 0.4663 | AUC 0.6895 | PR-AUC 0.3947 | bw 1.471 MB
+[ronde 07] bobot agregasi: 13=0.110, 54=0.103, 5=0.096, 19=0.103, 41=0.092, 23=0.107, 33=0.094, 39=0.105, 29=0.099, 10=0.089
+[ronde 07] VAL acc 0.5715 | prec 0.3328 | rec 0.7601 | F1 0.4621 | AUC 0.6901 | PR-AUC 0.3931 | bw 1.471 MB
+[ronde 08] bobot agregasi: 29=0.100, 33=0.096, 23=0.112, 13=0.105, 5=0.098, 54=0.099, 41=0.090, 19=0.107, 10=0.087, 39=0.106
+[ronde 08] VAL acc 0.5798 | prec 0.3372 | rec 0.7534 | F1 0.4650 | AUC 0.6936 | PR-AUC 0.3984 | bw 1.471 MB
+[ronde 09] bobot agregasi: 41=0.088, 5=0.096, 10=0.090, 23=0.108, 33=0.097, 13=0.106, 29=0.096, 19=0.106, 39=0.112, 54=0.102
+[ronde 09] VAL acc 0.5747 | prec 0.3363 | rec 0.7689 | F1 0.4671 | AUC 0.6956 | PR-AUC 0.3996 | bw 1.471 MB
+[ronde 10] bobot agregasi: 19=0.105, 33=0.096, 23=0.105, 5=0.098, 39=0.109, 10=0.088, 13=0.104, 29=0.099, 54=0.104, 41=0.092
+[ronde 10] VAL acc 0.5867 | prec 0.3426 | rec 0.7605 | F1 0.4716 | AUC 0.6979 | PR-AUC 0.4002 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.5 | seed: 0
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 33=0.090, 19=0.079, 5=0.111, 29=0.118, 10=0.103, 13=0.085, 41=0.119, 54=0.124, 39=0.057, 23=0.114
+[ronde 01] VAL acc 0.5340 | prec 0.2847 | rec 0.6107 | F1 0.3879 | AUC 0.5953 | PR-AUC 0.3058 | bw 1.471 MB
+[ronde 02] bobot agregasi: 23=0.114, 39=0.125, 10=0.077, 33=0.087, 13=0.111, 5=0.096, 41=0.085, 29=0.099, 54=0.102, 19=0.104
+[ronde 02] VAL acc 0.6083 | prec 0.3393 | rec 0.6492 | F1 0.4450 | AUC 0.6620 | PR-AUC 0.3655 | bw 1.471 MB
+[ronde 03] bobot agregasi: 41=0.083, 29=0.097, 23=0.122, 5=0.092, 13=0.112, 19=0.107, 39=0.123, 10=0.078, 54=0.097, 33=0.089
+[ronde 03] VAL acc 0.5506 | prec 0.3206 | rec 0.7612 | F1 0.4504 | AUC 0.6706 | PR-AUC 0.3720 | bw 1.471 MB
+[ronde 04] bobot agregasi: 5=0.093, 19=0.110, 13=0.110, 29=0.097, 10=0.075, 54=0.095, 33=0.090, 39=0.129, 41=0.081, 23=0.119
+[ronde 04] VAL acc 0.6502 | prec 0.3645 | rec 0.5924 | F1 0.4505 | AUC 0.6803 | PR-AUC 0.3856 | bw 1.471 MB
+[ronde 05] bobot agregasi: 41=0.082, 39=0.123, 23=0.118, 29=0.097, 33=0.092, 13=0.112, 54=0.096, 5=0.093, 19=0.109, 10=0.077
+[ronde 05] VAL acc 0.5798 | prec 0.3351 | rec 0.7412 | F1 0.4607 | AUC 0.6844 | PR-AUC 0.3867 | bw 1.471 MB
+[ronde 06] bobot agregasi: 10=0.077, 33=0.090, 39=0.133, 19=0.112, 29=0.096, 41=0.081, 13=0.107, 5=0.093, 23=0.115, 54=0.097
+[ronde 06] VAL acc 0.6067 | prec 0.3481 | rec 0.7094 | F1 0.4662 | AUC 0.6909 | PR-AUC 0.3952 | bw 1.471 MB
+[ronde 07] bobot agregasi: 39=0.129, 19=0.108, 54=0.098, 33=0.089, 41=0.080, 10=0.078, 5=0.092, 29=0.096, 23=0.116, 13=0.113
+[ronde 07] VAL acc 0.5746 | prec 0.3352 | rec 0.7635 | F1 0.4651 | AUC 0.6915 | PR-AUC 0.3965 | bw 1.471 MB
+[ronde 08] bobot agregasi: 33=0.091, 54=0.095, 41=0.080, 10=0.076, 13=0.109, 39=0.130, 19=0.111, 5=0.094, 29=0.097, 23=0.119
+[ronde 08] VAL acc 0.5778 | prec 0.3368 | rec 0.7580 | F1 0.4656 | AUC 0.6946 | PR-AUC 0.3988 | bw 1.471 MB
+[ronde 09] bobot agregasi: 5=0.093, 41=0.078, 39=0.135, 33=0.091, 10=0.077, 29=0.094, 23=0.116, 13=0.109, 19=0.109, 54=0.097
+[ronde 09] VAL acc 0.5718 | prec 0.3358 | rec 0.7780 | F1 0.4683 | AUC 0.6975 | PR-AUC 0.4020 | bw 1.471 MB
+[ronde 10] bobot agregasi: 23=0.113, 39=0.133, 10=0.076, 33=0.091, 29=0.096, 54=0.098, 41=0.080, 5=0.094, 19=0.109, 13=0.109
+[ronde 10] VAL acc 0.5835 | prec 0.3414 | rec 0.7673 | F1 0.4718 | AUC 0.6990 | PR-AUC 0.4034 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0 | seed: 0
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 19=0.040, 10=0.160, 23=0.077, 13=0.047, 29=0.125, 54=0.143, 41=0.193, 39=0.012, 5=0.119, 33=0.084
+[ronde 01] VAL acc 0.5335 | prec 0.2844 | rec 0.6107 | F1 0.3876 | AUC 0.5997 | PR-AUC 0.3110 | bw 1.471 MB
+[ronde 02] bobot agregasi: 13=0.092, 54=0.126, 33=0.095, 10=0.103, 39=0.065, 29=0.110, 5=0.113, 41=0.131, 23=0.092, 19=0.074
+[ronde 02] VAL acc 0.5559 | prec 0.3196 | rec 0.7365 | F1 0.4453 | AUC 0.6566 | PR-AUC 0.3599 | bw 1.471 MB
+[ronde 03] bobot agregasi: 5=0.100, 33=0.103, 39=0.069, 13=0.098, 23=0.107, 54=0.109, 41=0.114, 29=0.100, 19=0.090, 10=0.109
+[ronde 03] VAL acc 0.5254 | prec 0.3121 | rec 0.7942 | F1 0.4475 | AUC 0.6669 | PR-AUC 0.3682 | bw 1.471 MB
+[ronde 04] bobot agregasi: 19=0.096, 39=0.072, 41=0.109, 33=0.105, 10=0.103, 23=0.103, 5=0.102, 54=0.105, 29=0.105, 13=0.098
+[ronde 04] VAL acc 0.6580 | prec 0.3672 | rec 0.5659 | F1 0.4446 | AUC 0.6787 | PR-AUC 0.3861 | bw 1.471 MB
+[ronde 05] bobot agregasi: 54=0.108, 5=0.103, 13=0.101, 29=0.098, 41=0.113, 10=0.107, 23=0.099, 39=0.069, 33=0.109, 19=0.094
+[ronde 05] VAL acc 0.5845 | prec 0.3365 | rec 0.7315 | F1 0.4601 | AUC 0.6821 | PR-AUC 0.3855 | bw 1.471 MB
+[ronde 06] bobot agregasi: 41=0.109, 29=0.101, 33=0.105, 5=0.100, 19=0.102, 23=0.093, 10=0.107, 54=0.108, 13=0.096, 39=0.079
+[ronde 06] VAL acc 0.6076 | prec 0.3475 | rec 0.6999 | F1 0.4636 | AUC 0.6879 | PR-AUC 0.3944 | bw 1.471 MB
+[ronde 07] bobot agregasi: 13=0.102, 23=0.093, 10=0.110, 29=0.102, 54=0.108, 41=0.109, 33=0.102, 19=0.095, 5=0.099, 39=0.079
+[ronde 07] VAL acc 0.5680 | prec 0.3317 | rec 0.7671 | F1 0.4624 | AUC 0.6884 | PR-AUC 0.3932 | bw 1.471 MB
+[ronde 08] bobot agregasi: 41=0.108, 33=0.103, 23=0.102, 39=0.076, 13=0.095, 10=0.107, 54=0.104, 29=0.105, 19=0.098, 5=0.102
+[ronde 08] VAL acc 0.5818 | prec 0.3383 | rec 0.7502 | F1 0.4654 | AUC 0.6928 | PR-AUC 0.3968 | bw 1.471 MB
+[ronde 09] bobot agregasi: 13=0.097, 39=0.083, 29=0.097, 10=0.111, 41=0.103, 19=0.097, 23=0.098, 33=0.106, 54=0.109, 5=0.100
+[ronde 09] VAL acc 0.5754 | prec 0.3364 | rec 0.7675 | F1 0.4670 | AUC 0.6953 | PR-AUC 0.3983 | bw 1.471 MB
+[ronde 10] bobot agregasi: 39=0.080, 23=0.094, 33=0.103, 5=0.103, 13=0.095, 41=0.109, 10=0.107, 54=0.110, 19=0.097, 29=0.100
+[ronde 10] VAL acc 0.5923 | prec 0.3438 | rec 0.7455 | F1 0.4698 | AUC 0.6970 | PR-AUC 0.3998 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g3 | seed: 0
+[ronde 01] VAL acc 0.5303 | prec 0.2826 | rec 0.6100 | F1 0.3857 | AUC 0.5898 | PR-AUC 0.3030 | bw 1.471 MB
+[ronde 02] VAL acc 0.5559 | prec 0.3205 | rec 0.7423 | F1 0.4470 | AUC 0.6579 | PR-AUC 0.3580 | bw 1.471 MB
+[ronde 03] VAL acc 0.5484 | prec 0.3207 | rec 0.7699 | F1 0.4521 | AUC 0.6732 | PR-AUC 0.3740 | bw 1.471 MB
+[ronde 04] VAL acc 0.6359 | prec 0.3587 | rec 0.6356 | F1 0.4578 | AUC 0.6813 | PR-AUC 0.3886 | bw 1.471 MB
+[ronde 05] VAL acc 0.6049 | prec 0.3467 | rec 0.7119 | F1 0.4656 | AUC 0.6871 | PR-AUC 0.3913 | bw 1.471 MB
+[ronde 06] VAL acc 0.5933 | prec 0.3427 | rec 0.7363 | F1 0.4671 | AUC 0.6911 | PR-AUC 0.3974 | bw 1.471 MB
+[ronde 07] VAL acc 0.6207 | prec 0.3573 | rec 0.7039 | F1 0.4731 | AUC 0.6954 | PR-AUC 0.4000 | bw 1.471 MB
+[ronde 08] VAL acc 0.5666 | prec 0.3333 | rec 0.7865 | F1 0.4677 | AUC 0.6955 | PR-AUC 0.3994 | bw 1.471 MB
+[ronde 09] VAL acc 0.5664 | prec 0.3337 | rec 0.7920 | F1 0.4691 | AUC 0.6976 | PR-AUC 0.3993 | bw 1.471 MB
+[ronde 10] VAL acc 0.6090 | prec 0.3533 | rec 0.7430 | F1 0.4784 | AUC 0.7021 | PR-AUC 0.4044 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g5 | seed: 0
+[ronde 01] VAL acc 0.5252 | prec 0.2862 | rec 0.6418 | F1 0.3954 | AUC 0.5918 | PR-AUC 0.3036 | bw 1.471 MB
+[ronde 02] VAL acc 0.5830 | prec 0.3324 | rec 0.7144 | F1 0.4531 | AUC 0.6614 | PR-AUC 0.3636 | bw 1.471 MB
+[ronde 03] VAL acc 0.5463 | prec 0.3195 | rec 0.7703 | F1 0.4510 | AUC 0.6705 | PR-AUC 0.3704 | bw 1.471 MB
+[ronde 04] VAL acc 0.6573 | prec 0.3662 | rec 0.5632 | F1 0.4430 | AUC 0.6821 | PR-AUC 0.3902 | bw 1.471 MB
+[ronde 05] VAL acc 0.6001 | prec 0.3454 | rec 0.7250 | F1 0.4672 | AUC 0.6876 | PR-AUC 0.3891 | bw 1.471 MB
+[ronde 06] VAL acc 0.5853 | prec 0.3389 | rec 0.7462 | F1 0.4655 | AUC 0.6919 | PR-AUC 0.3942 | bw 1.471 MB
+[ronde 07] VAL acc 0.5770 | prec 0.3359 | rec 0.7612 | F1 0.4655 | AUC 0.6922 | PR-AUC 0.3939 | bw 1.471 MB
+[ronde 08] VAL acc 0.5726 | prec 0.3360 | rec 0.7774 | F1 0.4686 | AUC 0.6977 | PR-AUC 0.4027 | bw 1.471 MB
+[ronde 09] VAL acc 0.5763 | prec 0.3374 | rec 0.7750 | F1 0.4697 | AUC 0.6988 | PR-AUC 0.4011 | bw 1.471 MB
+[ronde 10] VAL acc 0.6016 | prec 0.3482 | rec 0.7393 | F1 0.4730 | AUC 0.7025 | PR-AUC 0.4077 | bw 1.471 MB
+[server] algoritma agregasi: fedavg | seed: 123
+[ronde 01] VAL acc 0.6207 | prec 0.2953 | rec 0.4004 | F1 0.3383 | AUC 0.5771 | PR-AUC 0.3011 | bw 1.471 MB
+[ronde 02] VAL acc 0.6164 | prec 0.3329 | rec 0.5842 | F1 0.4237 | AUC 0.6424 | PR-AUC 0.3501 | bw 1.471 MB
+[ronde 03] VAL acc 0.6417 | prec 0.3595 | rec 0.6157 | F1 0.4536 | AUC 0.6765 | PR-AUC 0.3847 | bw 1.471 MB
+[ronde 04] VAL acc 0.6350 | prec 0.3632 | rec 0.6721 | F1 0.4711 | AUC 0.6970 | PR-AUC 0.4080 | bw 1.471 MB
+[ronde 05] VAL acc 0.6341 | prec 0.3657 | rec 0.6971 | F1 0.4793 | AUC 0.7050 | PR-AUC 0.4218 | bw 1.471 MB
+[ronde 06] VAL acc 0.6457 | prec 0.3719 | rec 0.6748 | F1 0.4791 | AUC 0.7128 | PR-AUC 0.4291 | bw 1.471 MB
+[ronde 07] VAL acc 0.6350 | prec 0.3698 | rec 0.7237 | F1 0.4892 | AUC 0.7185 | PR-AUC 0.4360 | bw 1.471 MB
+[ronde 08] VAL acc 0.6237 | prec 0.3641 | rec 0.7424 | F1 0.4881 | AUC 0.7229 | PR-AUC 0.4410 | bw 1.471 MB
+[ronde 09] VAL acc 0.6346 | prec 0.3717 | rec 0.7387 | F1 0.4940 | AUC 0.7282 | PR-AUC 0.4450 | bw 1.471 MB
+[ronde 10] VAL acc 0.6403 | prec 0.3774 | rec 0.7494 | F1 0.5014 | AUC 0.7312 | PR-AUC 0.4486 | bw 1.471 MB
+[server] algoritma agregasi: fedprox | seed: 123
+[ronde 01] VAL acc 0.6103 | prec 0.2807 | rec 0.3870 | F1 0.3241 | AUC 0.5539 | PR-AUC 0.2816 | bw 1.471 MB
+[ronde 02] VAL acc 0.5573 | prec 0.2793 | rec 0.5224 | F1 0.3634 | AUC 0.5848 | PR-AUC 0.2925 | bw 1.471 MB
+[ronde 03] VAL acc 0.5424 | prec 0.2862 | rec 0.5962 | F1 0.3863 | AUC 0.5931 | PR-AUC 0.3037 | bw 1.471 MB
+[ronde 04] VAL acc 0.5427 | prec 0.2870 | rec 0.5992 | F1 0.3877 | AUC 0.6147 | PR-AUC 0.3272 | bw 1.471 MB
+[ronde 05] VAL acc 0.5831 | prec 0.3276 | rec 0.6853 | F1 0.4429 | AUC 0.6593 | PR-AUC 0.3728 | bw 1.471 MB
+[ronde 06] VAL acc 0.6470 | prec 0.3648 | rec 0.6208 | F1 0.4591 | AUC 0.6847 | PR-AUC 0.3998 | bw 1.471 MB
+[ronde 07] VAL acc 0.6474 | prec 0.3675 | rec 0.6355 | F1 0.4653 | AUC 0.6961 | PR-AUC 0.4115 | bw 1.471 MB
+[ronde 08] VAL acc 0.6492 | prec 0.3737 | rec 0.6685 | F1 0.4790 | AUC 0.7026 | PR-AUC 0.4158 | bw 1.471 MB
+[ronde 09] VAL acc 0.6375 | prec 0.3704 | rec 0.7114 | F1 0.4866 | AUC 0.7101 | PR-AUC 0.4242 | bw 1.471 MB
+[ronde 10] VAL acc 0.6528 | prec 0.3800 | rec 0.6914 | F1 0.4899 | AUC 0.7184 | PR-AUC 0.4321 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.3 | seed: 123
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 13=0.098, 29=0.115, 33=0.087, 19=0.085, 54=0.118, 23=0.089, 5=0.127, 10=0.115, 41=0.114, 39=0.051
+[ronde 01] VAL acc 0.7584 | prec 0.4429 | rec 0.0055 | F1 0.0107 | AUC 0.5747 | PR-AUC 0.2952 | bw 1.471 MB
+[ronde 02] bobot agregasi: 39=0.090, 5=0.120, 54=0.117, 13=0.087, 10=0.096, 29=0.124, 41=0.113, 33=0.100, 19=0.070, 23=0.084
+[ronde 02] VAL acc 0.6966 | prec 0.3669 | rec 0.3506 | F1 0.3579 | AUC 0.6307 | PR-AUC 0.3440 | bw 1.471 MB
+[ronde 03] bobot agregasi: 29=0.101, 33=0.084, 19=0.096, 41=0.103, 54=0.113, 10=0.091, 23=0.118, 13=0.111, 5=0.102, 39=0.080
+[ronde 03] VAL acc 0.6828 | prec 0.3778 | rec 0.4844 | F1 0.4238 | AUC 0.6657 | PR-AUC 0.3753 | bw 1.471 MB
+[ronde 04] bobot agregasi: 19=0.103, 54=0.103, 10=0.089, 33=0.093, 39=0.089, 29=0.107, 41=0.101, 23=0.114, 5=0.099, 13=0.103
+[ronde 04] VAL acc 0.6173 | prec 0.3501 | rec 0.6789 | F1 0.4616 | AUC 0.6842 | PR-AUC 0.3940 | bw 1.471 MB
+[ronde 05] bobot agregasi: 23=0.106, 39=0.098, 54=0.103, 29=0.103, 33=0.101, 41=0.094, 19=0.107, 5=0.095, 13=0.109, 10=0.084
+[ronde 05] VAL acc 0.6256 | prec 0.3588 | rec 0.6924 | F1 0.4721 | AUC 0.6974 | PR-AUC 0.4094 | bw 1.471 MB
+[ronde 06] bobot agregasi: 41=0.092, 23=0.100, 33=0.099, 10=0.089, 29=0.102, 13=0.102, 5=0.100, 54=0.101, 19=0.110, 39=0.105
+[ronde 06] VAL acc 0.6520 | prec 0.3737 | rec 0.6478 | F1 0.4733 | AUC 0.7051 | PR-AUC 0.4190 | bw 1.471 MB
+[ronde 07] bobot agregasi: 41=0.090, 39=0.107, 33=0.100, 23=0.108, 19=0.109, 54=0.102, 10=0.087, 13=0.100, 29=0.099, 5=0.098
+[ronde 07] VAL acc 0.6412 | prec 0.3697 | rec 0.6844 | F1 0.4796 | AUC 0.7109 | PR-AUC 0.4247 | bw 1.471 MB
+[ronde 08] bobot agregasi: 33=0.097, 39=0.110, 10=0.085, 19=0.105, 29=0.100, 41=0.091, 23=0.109, 54=0.101, 5=0.101, 13=0.101
+[ronde 08] VAL acc 0.6351 | prec 0.3666 | rec 0.6979 | F1 0.4803 | AUC 0.7149 | PR-AUC 0.4303 | bw 1.471 MB
+[ronde 09] bobot agregasi: 41=0.091, 10=0.086, 39=0.112, 23=0.108, 29=0.099, 19=0.108, 54=0.101, 5=0.095, 33=0.096, 13=0.104
+[ronde 09] VAL acc 0.6477 | prec 0.3746 | rec 0.6806 | F1 0.4826 | AUC 0.7182 | PR-AUC 0.4363 | bw 1.471 MB
+[ronde 10] bobot agregasi: 54=0.102, 13=0.104, 19=0.106, 5=0.098, 39=0.109, 29=0.098, 33=0.096, 23=0.108, 10=0.087, 41=0.091
+[ronde 10] VAL acc 0.6478 | prec 0.3766 | rec 0.6927 | F1 0.4874 | AUC 0.7220 | PR-AUC 0.4435 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.5 | seed: 123
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 39=0.073, 29=0.110, 19=0.099, 5=0.116, 41=0.097, 10=0.095, 13=0.109, 54=0.111, 23=0.106, 33=0.086
+[ronde 01] VAL acc 0.7581 | prec 0.4055 | rec 0.0078 | F1 0.0152 | AUC 0.5765 | PR-AUC 0.2965 | bw 1.471 MB
+[ronde 02] bobot agregasi: 39=0.119, 33=0.093, 29=0.113, 13=0.101, 5=0.100, 54=0.112, 23=0.108, 41=0.093, 19=0.082, 10=0.080
+[ronde 02] VAL acc 0.7151 | prec 0.3859 | rec 0.2978 | F1 0.3353 | AUC 0.6357 | PR-AUC 0.3496 | bw 1.471 MB
+[ronde 03] bobot agregasi: 10=0.079, 29=0.101, 54=0.103, 23=0.123, 13=0.111, 39=0.116, 33=0.083, 19=0.100, 41=0.088, 5=0.096
+[ronde 03] VAL acc 0.6921 | prec 0.3917 | rec 0.4933 | F1 0.4361 | AUC 0.6713 | PR-AUC 0.3818 | bw 1.471 MB
+[ronde 04] bobot agregasi: 23=0.118, 29=0.098, 41=0.083, 19=0.113, 39=0.126, 13=0.109, 10=0.076, 5=0.094, 54=0.096, 33=0.088
+[ronde 04] VAL acc 0.6143 | prec 0.3526 | rec 0.7062 | F1 0.4698 | AUC 0.6915 | PR-AUC 0.3961 | bw 1.471 MB
+[ronde 05] bobot agregasi: 10=0.076, 33=0.093, 29=0.098, 19=0.112, 5=0.093, 41=0.081, 54=0.096, 23=0.118, 39=0.121, 13=0.112
+[ronde 05] VAL acc 0.6362 | prec 0.3664 | rec 0.6877 | F1 0.4775 | AUC 0.7008 | PR-AUC 0.4097 | bw 1.471 MB
+[ronde 06] bobot agregasi: 54=0.095, 39=0.129, 5=0.095, 41=0.079, 33=0.093, 10=0.075, 29=0.098, 19=0.112, 13=0.110, 23=0.114
+[ronde 06] VAL acc 0.6495 | prec 0.3741 | rec 0.6653 | F1 0.4784 | AUC 0.7063 | PR-AUC 0.4196 | bw 1.471 MB
+[ronde 07] bobot agregasi: 33=0.092, 39=0.133, 10=0.076, 23=0.114, 54=0.097, 29=0.096, 5=0.093, 13=0.109, 41=0.079, 19=0.111
+[ronde 07] VAL acc 0.6372 | prec 0.3673 | rec 0.6903 | F1 0.4791 | AUC 0.7117 | PR-AUC 0.4292 | bw 1.471 MB
+[ronde 08] bobot agregasi: 13=0.107, 39=0.134, 33=0.091, 54=0.097, 41=0.081, 5=0.095, 29=0.097, 10=0.075, 23=0.116, 19=0.107
+[ronde 08] VAL acc 0.6237 | prec 0.3606 | rec 0.7182 | F1 0.4798 | AUC 0.7157 | PR-AUC 0.4333 | bw 1.471 MB
+[ronde 09] bobot agregasi: 23=0.116, 29=0.095, 33=0.091, 10=0.075, 5=0.092, 41=0.080, 39=0.134, 54=0.096, 13=0.111, 19=0.110
+[ronde 09] VAL acc 0.6295 | prec 0.3662 | rec 0.7257 | F1 0.4862 | AUC 0.7193 | PR-AUC 0.4384 | bw 1.471 MB
+[ronde 10] bobot agregasi: 13=0.109, 41=0.080, 23=0.115, 54=0.096, 33=0.090, 39=0.135, 19=0.109, 10=0.076, 5=0.093, 29=0.096
+[ronde 10] VAL acc 0.6244 | prec 0.3641 | rec 0.7402 | F1 0.4876 | AUC 0.7232 | PR-AUC 0.4413 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0 | seed: 123
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 5=0.139, 41=0.141, 29=0.119, 19=0.070, 39=0.020, 10=0.147, 23=0.072, 33=0.084, 13=0.083, 54=0.126
+[ronde 01] VAL acc 0.7584 | prec 0.3264 | rec 0.0025 | F1 0.0049 | AUC 0.5730 | PR-AUC 0.2910 | bw 1.471 MB
+[ronde 02] bobot agregasi: 29=0.132, 41=0.129, 54=0.127, 39=0.045, 19=0.059, 13=0.074, 10=0.126, 33=0.098, 23=0.070, 5=0.141
+[ronde 02] VAL acc 0.6456 | prec 0.3236 | rec 0.4229 | F1 0.3655 | AUC 0.6139 | PR-AUC 0.3295 | bw 1.471 MB
+[ronde 03] bobot agregasi: 41=0.127, 54=0.131, 29=0.113, 23=0.095, 19=0.083, 13=0.092, 33=0.088, 5=0.109, 10=0.111, 39=0.052
+[ronde 03] VAL acc 0.6683 | prec 0.3700 | rec 0.5311 | F1 0.4356 | AUC 0.6701 | PR-AUC 0.3786 | bw 1.471 MB
+[ronde 04] bobot agregasi: 41=0.119, 5=0.104, 10=0.107, 29=0.106, 23=0.095, 13=0.093, 19=0.088, 39=0.064, 54=0.112, 33=0.111
+[ronde 04] VAL acc 0.6380 | prec 0.3606 | rec 0.6395 | F1 0.4606 | AUC 0.6891 | PR-AUC 0.3945 | bw 1.471 MB
+[ronde 05] bobot agregasi: 5=0.099, 29=0.104, 54=0.107, 33=0.108, 23=0.091, 39=0.067, 13=0.099, 19=0.102, 41=0.115, 10=0.109
+[ronde 05] VAL acc 0.6456 | prec 0.3683 | rec 0.6475 | F1 0.4688 | AUC 0.6980 | PR-AUC 0.4033 | bw 1.471 MB
+[ronde 06] bobot agregasi: 5=0.103, 10=0.109, 39=0.071, 23=0.089, 33=0.107, 54=0.108, 41=0.110, 19=0.105, 29=0.106, 13=0.092
+[ronde 06] VAL acc 0.6631 | prec 0.3804 | rec 0.6240 | F1 0.4722 | AUC 0.7053 | PR-AUC 0.4124 | bw 1.471 MB
+[ronde 07] bobot agregasi: 10=0.107, 33=0.107, 23=0.095, 13=0.093, 19=0.104, 5=0.102, 39=0.076, 29=0.100, 41=0.106, 54=0.109
+[ronde 07] VAL acc 0.6346 | prec 0.3663 | rec 0.6989 | F1 0.4802 | AUC 0.7097 | PR-AUC 0.4220 | bw 1.471 MB
+[ronde 08] bobot agregasi: 29=0.099, 19=0.101, 23=0.098, 41=0.108, 33=0.103, 10=0.104, 39=0.077, 13=0.092, 54=0.111, 5=0.106
+[ronde 08] VAL acc 0.6358 | prec 0.3672 | rec 0.6985 | F1 0.4809 | AUC 0.7117 | PR-AUC 0.4256 | bw 1.471 MB
+[ronde 09] bobot agregasi: 19=0.098, 54=0.109, 29=0.102, 39=0.079, 33=0.106, 23=0.099, 5=0.099, 10=0.105, 13=0.094, 41=0.109
+[ronde 09] VAL acc 0.6492 | prec 0.3748 | rec 0.6743 | F1 0.4814 | AUC 0.7159 | PR-AUC 0.4328 | bw 1.471 MB
+[ronde 10] bobot agregasi: 5=0.103, 33=0.104, 41=0.107, 29=0.101, 13=0.096, 10=0.108, 39=0.075, 23=0.098, 54=0.110, 19=0.099
+[ronde 10] VAL acc 0.6387 | prec 0.3707 | rec 0.7094 | F1 0.4866 | AUC 0.7180 | PR-AUC 0.4338 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g3 | seed: 123
+[ronde 01] VAL acc 0.6884 | prec 0.2849 | rec 0.1899 | F1 0.2260 | AUC 0.5788 | PR-AUC 0.2991 | bw 1.471 MB
+[ronde 02] VAL acc 0.5605 | prec 0.2944 | rec 0.5850 | F1 0.3913 | AUC 0.6256 | PR-AUC 0.3386 | bw 1.471 MB
+[ronde 03] VAL acc 0.6274 | prec 0.3511 | rec 0.6377 | F1 0.4526 | AUC 0.6745 | PR-AUC 0.3799 | bw 1.471 MB
+[ronde 04] VAL acc 0.6064 | prec 0.3475 | rec 0.7132 | F1 0.4669 | AUC 0.6947 | PR-AUC 0.4072 | bw 1.471 MB
+[ronde 05] VAL acc 0.6234 | prec 0.3562 | rec 0.6908 | F1 0.4698 | AUC 0.7031 | PR-AUC 0.4171 | bw 1.471 MB
+[ronde 06] VAL acc 0.6210 | prec 0.3582 | rec 0.7170 | F1 0.4775 | AUC 0.7114 | PR-AUC 0.4305 | bw 1.471 MB
+[ronde 07] VAL acc 0.6359 | prec 0.3697 | rec 0.7146 | F1 0.4868 | AUC 0.7186 | PR-AUC 0.4387 | bw 1.471 MB
+[ronde 08] VAL acc 0.6329 | prec 0.3700 | rec 0.7357 | F1 0.4919 | AUC 0.7240 | PR-AUC 0.4402 | bw 1.471 MB
+[ronde 09] VAL acc 0.6265 | prec 0.3669 | rec 0.7472 | F1 0.4915 | AUC 0.7275 | PR-AUC 0.4434 | bw 1.471 MB
+[ronde 10] VAL acc 0.6433 | prec 0.3790 | rec 0.7429 | F1 0.5013 | AUC 0.7304 | PR-AUC 0.4457 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g5 | seed: 123
+[ronde 01] VAL acc 0.7409 | prec 0.3476 | rec 0.0783 | F1 0.1273 | AUC 0.5826 | PR-AUC 0.3010 | bw 1.471 MB
+[ronde 02] VAL acc 0.6523 | prec 0.3454 | rec 0.4846 | F1 0.4023 | AUC 0.6365 | PR-AUC 0.3530 | bw 1.471 MB
+[ronde 03] VAL acc 0.6524 | prec 0.3662 | rec 0.5958 | F1 0.4531 | AUC 0.6803 | PR-AUC 0.3880 | bw 1.471 MB
+[ronde 04] VAL acc 0.6207 | prec 0.3560 | rec 0.6985 | F1 0.4711 | AUC 0.6958 | PR-AUC 0.4030 | bw 1.471 MB
+[ronde 05] VAL acc 0.6404 | prec 0.3678 | rec 0.6784 | F1 0.4766 | AUC 0.7026 | PR-AUC 0.4108 | bw 1.471 MB
+[ronde 06] VAL acc 0.6398 | prec 0.3669 | rec 0.6758 | F1 0.4752 | AUC 0.7078 | PR-AUC 0.4242 | bw 1.471 MB
+[ronde 07] VAL acc 0.6234 | prec 0.3608 | rec 0.7215 | F1 0.4807 | AUC 0.7173 | PR-AUC 0.4316 | bw 1.471 MB
+[ronde 08] VAL acc 0.6085 | prec 0.3541 | rec 0.7493 | F1 0.4805 | AUC 0.7182 | PR-AUC 0.4332 | bw 1.471 MB
+[ronde 09] VAL acc 0.6503 | prec 0.3757 | rec 0.6734 | F1 0.4820 | AUC 0.7231 | PR-AUC 0.4379 | bw 1.471 MB
+[ronde 10] VAL acc 0.6410 | prec 0.3750 | rec 0.7263 | F1 0.4942 | AUC 0.7272 | PR-AUC 0.4465 | bw 1.471 MB
+[server] algoritma agregasi: fedavg | seed: 1337
+[ronde 01] VAL acc 0.6708 | prec 0.3010 | rec 0.2704 | F1 0.2835 | AUC 0.5913 | PR-AUC 0.3026 | bw 1.471 MB
+[ronde 02] VAL acc 0.6266 | prec 0.3468 | rec 0.6121 | F1 0.4418 | AUC 0.6609 | PR-AUC 0.3653 | bw 1.471 MB
+[ronde 03] VAL acc 0.6245 | prec 0.3498 | rec 0.6361 | F1 0.4505 | AUC 0.6749 | PR-AUC 0.3843 | bw 1.471 MB
+[ronde 04] VAL acc 0.6253 | prec 0.3541 | rec 0.6605 | F1 0.4603 | AUC 0.6838 | PR-AUC 0.3951 | bw 1.471 MB
+[ronde 05] VAL acc 0.6491 | prec 0.3678 | rec 0.6283 | F1 0.4635 | AUC 0.6916 | PR-AUC 0.4053 | bw 1.471 MB
+[ronde 06] VAL acc 0.6428 | prec 0.3668 | rec 0.6571 | F1 0.4704 | AUC 0.6982 | PR-AUC 0.4144 | bw 1.471 MB
+[ronde 07] VAL acc 0.6253 | prec 0.3578 | rec 0.6925 | F1 0.4715 | AUC 0.7022 | PR-AUC 0.4188 | bw 1.471 MB
+[ronde 08] VAL acc 0.6276 | prec 0.3603 | rec 0.6983 | F1 0.4750 | AUC 0.7073 | PR-AUC 0.4216 | bw 1.471 MB
+[ronde 09] VAL acc 0.6081 | prec 0.3523 | rec 0.7410 | F1 0.4772 | AUC 0.7113 | PR-AUC 0.4253 | bw 1.471 MB
+[ronde 10] VAL acc 0.5888 | prec 0.3452 | rec 0.7812 | F1 0.4785 | AUC 0.7149 | PR-AUC 0.4263 | bw 1.471 MB
+[server] algoritma agregasi: fedprox | seed: 1337
+[ronde 01] VAL acc 0.6990 | prec 0.2930 | rec 0.1756 | F1 0.2178 | AUC 0.5810 | PR-AUC 0.2970 | bw 1.471 MB
+[ronde 02] VAL acc 0.5132 | prec 0.2831 | rec 0.6588 | F1 0.3956 | AUC 0.5877 | PR-AUC 0.3020 | bw 1.471 MB
+[ronde 03] VAL acc 0.5388 | prec 0.2883 | rec 0.6163 | F1 0.3924 | AUC 0.6189 | PR-AUC 0.3319 | bw 1.471 MB
+[ronde 04] VAL acc 0.6196 | prec 0.3467 | rec 0.6414 | F1 0.4493 | AUC 0.6705 | PR-AUC 0.3759 | bw 1.471 MB
+[ronde 05] VAL acc 0.6485 | prec 0.3611 | rec 0.5846 | F1 0.4455 | AUC 0.6762 | PR-AUC 0.3835 | bw 1.471 MB
+[ronde 06] VAL acc 0.6405 | prec 0.3604 | rec 0.6229 | F1 0.4557 | AUC 0.6791 | PR-AUC 0.3857 | bw 1.471 MB
+[ronde 07] VAL acc 0.6422 | prec 0.3624 | rec 0.6237 | F1 0.4574 | AUC 0.6825 | PR-AUC 0.3910 | bw 1.471 MB
+[ronde 08] VAL acc 0.6662 | prec 0.3761 | rec 0.5715 | F1 0.4525 | AUC 0.6860 | PR-AUC 0.3951 | bw 1.471 MB
+[ronde 09] VAL acc 0.6057 | prec 0.3464 | rec 0.7028 | F1 0.4630 | AUC 0.6884 | PR-AUC 0.3962 | bw 1.471 MB
+[ronde 10] VAL acc 0.5711 | prec 0.3328 | rec 0.7649 | F1 0.4632 | AUC 0.6909 | PR-AUC 0.4000 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.3 | seed: 1337
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 29=0.114, 5=0.127, 10=0.117, 41=0.121, 54=0.107, 33=0.112, 39=0.036, 23=0.074, 19=0.079, 13=0.113
+[ronde 01] VAL acc 0.6995 | prec 0.2950 | rec 0.1781 | F1 0.2205 | AUC 0.5905 | PR-AUC 0.3048 | bw 1.471 MB
+[ronde 02] bobot agregasi: 5=0.113, 10=0.100, 41=0.117, 54=0.120, 13=0.107, 39=0.082, 23=0.090, 29=0.088, 19=0.084, 33=0.100
+[ronde 02] VAL acc 0.6341 | prec 0.3457 | rec 0.5745 | F1 0.4311 | AUC 0.6546 | PR-AUC 0.3628 | bw 1.471 MB
+[ronde 03] bobot agregasi: 33=0.100, 19=0.103, 5=0.099, 39=0.095, 29=0.100, 10=0.088, 23=0.107, 54=0.100, 41=0.099, 13=0.109
+[ronde 03] VAL acc 0.6199 | prec 0.3482 | rec 0.6483 | F1 0.4522 | AUC 0.6722 | PR-AUC 0.3806 | bw 1.471 MB
+[ronde 04] bobot agregasi: 19=0.104, 13=0.109, 54=0.100, 10=0.089, 41=0.094, 29=0.098, 23=0.106, 39=0.099, 33=0.098, 5=0.104
+[ronde 04] VAL acc 0.6379 | prec 0.3593 | rec 0.6296 | F1 0.4567 | AUC 0.6802 | PR-AUC 0.3912 | bw 1.471 MB
+[ronde 05] bobot agregasi: 54=0.102, 23=0.110, 41=0.094, 39=0.096, 10=0.090, 33=0.100, 13=0.106, 5=0.097, 29=0.102, 19=0.103
+[ronde 05] VAL acc 0.6504 | prec 0.3676 | rec 0.6163 | F1 0.4599 | AUC 0.6881 | PR-AUC 0.4000 | bw 1.471 MB
+[ronde 06] bobot agregasi: 5=0.094, 29=0.099, 13=0.105, 23=0.105, 39=0.102, 54=0.101, 41=0.093, 10=0.092, 33=0.099, 19=0.110
+[ronde 06] VAL acc 0.6472 | prec 0.3675 | rec 0.6370 | F1 0.4655 | AUC 0.6944 | PR-AUC 0.4083 | bw 1.471 MB
+[ronde 07] bobot agregasi: 29=0.098, 19=0.106, 39=0.103, 33=0.100, 54=0.100, 10=0.092, 41=0.086, 13=0.107, 5=0.098, 23=0.109
+[ronde 07] VAL acc 0.6205 | prec 0.3548 | rec 0.6945 | F1 0.4691 | AUC 0.6996 | PR-AUC 0.4128 | bw 1.471 MB
+[ronde 08] bobot agregasi: 13=0.106, 19=0.104, 39=0.104, 5=0.100, 33=0.098, 41=0.088, 54=0.102, 23=0.110, 10=0.089, 29=0.099
+[ronde 08] VAL acc 0.6251 | prec 0.3584 | rec 0.6978 | F1 0.4733 | AUC 0.7051 | PR-AUC 0.4187 | bw 1.471 MB
+[ronde 09] bobot agregasi: 41=0.090, 10=0.087, 13=0.106, 29=0.092, 23=0.109, 39=0.108, 33=0.097, 5=0.101, 19=0.107, 54=0.102
+[ronde 09] VAL acc 0.6015 | prec 0.3496 | rec 0.7537 | F1 0.4773 | AUC 0.7087 | PR-AUC 0.4229 | bw 1.471 MB
+[ronde 10] bobot agregasi: 10=0.088, 19=0.105, 41=0.089, 39=0.109, 29=0.098, 54=0.101, 23=0.110, 33=0.097, 13=0.104, 5=0.099
+[ronde 10] VAL acc 0.5943 | prec 0.3482 | rec 0.7789 | F1 0.4810 | AUC 0.7143 | PR-AUC 0.4258 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.5 | seed: 1337
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 54=0.104, 39=0.058, 13=0.121, 41=0.102, 5=0.117, 10=0.097, 23=0.091, 19=0.093, 33=0.105, 29=0.111
+[ronde 01] VAL acc 0.6965 | prec 0.2978 | rec 0.1911 | F1 0.2309 | AUC 0.5906 | PR-AUC 0.3049 | bw 1.471 MB
+[ronde 02] bobot agregasi: 5=0.106, 33=0.094, 10=0.085, 13=0.118, 29=0.087, 54=0.112, 39=0.104, 23=0.099, 19=0.099, 41=0.097
+[ronde 02] VAL acc 0.6298 | prec 0.3456 | rec 0.5928 | F1 0.4359 | AUC 0.6548 | PR-AUC 0.3610 | bw 1.471 MB
+[ronde 03] bobot agregasi: 19=0.110, 39=0.120, 13=0.112, 5=0.096, 23=0.116, 41=0.084, 33=0.093, 10=0.076, 54=0.096, 29=0.097
+[ronde 03] VAL acc 0.6154 | prec 0.3458 | rec 0.6548 | F1 0.4518 | AUC 0.6726 | PR-AUC 0.3830 | bw 1.471 MB
+[ronde 04] bobot agregasi: 13=0.113, 23=0.115, 54=0.097, 41=0.083, 39=0.119, 19=0.110, 29=0.096, 33=0.092, 10=0.077, 5=0.098
+[ronde 04] VAL acc 0.6376 | prec 0.3597 | rec 0.6348 | F1 0.4585 | AUC 0.6817 | PR-AUC 0.3935 | bw 1.471 MB
+[ronde 05] bobot agregasi: 54=0.098, 5=0.093, 13=0.112, 19=0.109, 10=0.079, 39=0.119, 41=0.082, 33=0.093, 29=0.099, 23=0.117
+[ronde 05] VAL acc 0.6535 | prec 0.3702 | rec 0.6162 | F1 0.4620 | AUC 0.6898 | PR-AUC 0.4031 | bw 1.471 MB
+[ronde 06] bobot agregasi: 23=0.113, 54=0.096, 33=0.092, 29=0.097, 13=0.111, 39=0.125, 5=0.092, 10=0.079, 19=0.114, 41=0.081
+[ronde 06] VAL acc 0.6482 | prec 0.3691 | rec 0.6408 | F1 0.4678 | AUC 0.6965 | PR-AUC 0.4113 | bw 1.471 MB
+[ronde 07] bobot agregasi: 33=0.092, 39=0.130, 54=0.096, 19=0.111, 5=0.093, 29=0.096, 41=0.077, 10=0.078, 23=0.116, 13=0.111
+[ronde 07] VAL acc 0.6233 | prec 0.3577 | rec 0.7011 | F1 0.4732 | AUC 0.7013 | PR-AUC 0.4161 | bw 1.471 MB
+[ronde 08] bobot agregasi: 23=0.117, 33=0.091, 41=0.078, 13=0.109, 39=0.131, 29=0.096, 54=0.097, 5=0.095, 10=0.077, 19=0.109
+[ronde 08] VAL acc 0.6319 | prec 0.3624 | rec 0.6876 | F1 0.4742 | AUC 0.7065 | PR-AUC 0.4209 | bw 1.471 MB
+[ronde 09] bobot agregasi: 23=0.117, 33=0.092, 19=0.110, 29=0.092, 41=0.079, 10=0.076, 13=0.110, 54=0.097, 39=0.131, 5=0.095
+[ronde 09] VAL acc 0.6214 | prec 0.3590 | rec 0.7212 | F1 0.4790 | AUC 0.7117 | PR-AUC 0.4257 | bw 1.471 MB
+[ronde 10] bobot agregasi: 41=0.079, 23=0.117, 39=0.131, 29=0.096, 13=0.108, 5=0.095, 10=0.076, 19=0.109, 33=0.092, 54=0.096
+[ronde 10] VAL acc 0.5944 | prec 0.3485 | rec 0.7807 | F1 0.4816 | AUC 0.7154 | PR-AUC 0.4276 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0 | seed: 1337
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 19=0.059, 13=0.099, 5=0.138, 54=0.106, 29=0.114, 39=0.014, 41=0.148, 23=0.053, 10=0.148, 33=0.120
+[ronde 01] VAL acc 0.7057 | prec 0.3033 | rec 0.1696 | F1 0.2159 | AUC 0.5908 | PR-AUC 0.3052 | bw 1.471 MB
+[ronde 02] bobot agregasi: 19=0.063, 10=0.127, 23=0.067, 33=0.107, 5=0.121, 54=0.141, 39=0.050, 29=0.079, 13=0.093, 41=0.151
+[ronde 02] VAL acc 0.6553 | prec 0.3521 | rec 0.5070 | F1 0.4150 | AUC 0.6508 | PR-AUC 0.3600 | bw 1.471 MB
+[ronde 03] bobot agregasi: 19=0.095, 13=0.101, 10=0.107, 33=0.112, 39=0.064, 54=0.107, 5=0.099, 29=0.104, 23=0.091, 41=0.120
+[ronde 03] VAL acc 0.6274 | prec 0.3512 | rec 0.6298 | F1 0.4499 | AUC 0.6707 | PR-AUC 0.3795 | bw 1.471 MB
+[ronde 04] bobot agregasi: 23=0.092, 5=0.111, 39=0.071, 13=0.101, 10=0.108, 33=0.106, 19=0.093, 41=0.113, 54=0.105, 29=0.099
+[ronde 04] VAL acc 0.6312 | prec 0.3533 | rec 0.6271 | F1 0.4513 | AUC 0.6784 | PR-AUC 0.3895 | bw 1.471 MB
+[ronde 05] bobot agregasi: 13=0.097, 29=0.106, 23=0.097, 33=0.108, 5=0.103, 41=0.112, 39=0.066, 54=0.108, 19=0.092, 10=0.110
+[ronde 05] VAL acc 0.6525 | prec 0.3687 | rec 0.6105 | F1 0.4591 | AUC 0.6864 | PR-AUC 0.3980 | bw 1.471 MB
+[ronde 06] bobot agregasi: 19=0.104, 29=0.100, 23=0.091, 5=0.100, 54=0.104, 13=0.098, 39=0.072, 10=0.112, 33=0.109, 41=0.110
+[ronde 06] VAL acc 0.6421 | prec 0.3632 | rec 0.6343 | F1 0.4613 | AUC 0.6927 | PR-AUC 0.4057 | bw 1.471 MB
+[ronde 07] bobot agregasi: 29=0.102, 33=0.108, 13=0.100, 39=0.072, 19=0.097, 54=0.106, 23=0.096, 10=0.115, 41=0.101, 5=0.102
+[ronde 07] VAL acc 0.6135 | prec 0.3519 | rec 0.7082 | F1 0.4696 | AUC 0.6969 | PR-AUC 0.4091 | bw 1.471 MB
+[ronde 08] bobot agregasi: 19=0.095, 13=0.097, 54=0.109, 23=0.098, 39=0.073, 33=0.106, 5=0.106, 10=0.110, 41=0.103, 29=0.102
+[ronde 08] VAL acc 0.6287 | prec 0.3592 | rec 0.6844 | F1 0.4707 | AUC 0.7029 | PR-AUC 0.4154 | bw 1.471 MB
+[ronde 09] bobot agregasi: 23=0.098, 41=0.104, 13=0.096, 10=0.107, 19=0.098, 5=0.106, 33=0.107, 39=0.078, 29=0.094, 54=0.111
+[ronde 09] VAL acc 0.6049 | prec 0.3482 | rec 0.7277 | F1 0.4706 | AUC 0.7065 | PR-AUC 0.4199 | bw 1.471 MB
+[ronde 10] bobot agregasi: 33=0.105, 10=0.108, 13=0.091, 29=0.102, 19=0.097, 23=0.099, 41=0.104, 39=0.079, 5=0.107, 54=0.109
+[ronde 10] VAL acc 0.5965 | prec 0.3465 | rec 0.7555 | F1 0.4748 | AUC 0.7117 | PR-AUC 0.4229 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g3 | seed: 1337
+[ronde 01] VAL acc 0.6698 | prec 0.2982 | rec 0.2692 | F1 0.2815 | AUC 0.5904 | PR-AUC 0.3021 | bw 1.471 MB
+[ronde 02] VAL acc 0.6003 | prec 0.3347 | rec 0.6578 | F1 0.4429 | AUC 0.6604 | PR-AUC 0.3663 | bw 1.471 MB
+[ronde 03] VAL acc 0.6198 | prec 0.3483 | rec 0.6510 | F1 0.4529 | AUC 0.6753 | PR-AUC 0.3819 | bw 1.471 MB
+[ronde 04] VAL acc 0.5823 | prec 0.3354 | rec 0.7357 | F1 0.4600 | AUC 0.6821 | PR-AUC 0.3885 | bw 1.471 MB
+[ronde 05] VAL acc 0.6456 | prec 0.3672 | rec 0.6403 | F1 0.4662 | AUC 0.6901 | PR-AUC 0.4027 | bw 1.471 MB
+[ronde 06] VAL acc 0.6372 | prec 0.3636 | rec 0.6655 | F1 0.4699 | AUC 0.6987 | PR-AUC 0.4120 | bw 1.471 MB
+[ronde 07] VAL acc 0.6380 | prec 0.3654 | rec 0.6757 | F1 0.4740 | AUC 0.7024 | PR-AUC 0.4179 | bw 1.471 MB
+[ronde 08] VAL acc 0.6306 | prec 0.3609 | rec 0.6874 | F1 0.4729 | AUC 0.7059 | PR-AUC 0.4221 | bw 1.471 MB
+[ronde 09] VAL acc 0.6166 | prec 0.3576 | rec 0.7347 | F1 0.4807 | AUC 0.7113 | PR-AUC 0.4238 | bw 1.471 MB
+[ronde 10] VAL acc 0.6019 | prec 0.3530 | rec 0.7746 | F1 0.4846 | AUC 0.7144 | PR-AUC 0.4235 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g5 | seed: 1337
+[ronde 01] VAL acc 0.6613 | prec 0.2997 | rec 0.2993 | F1 0.2980 | AUC 0.5876 | PR-AUC 0.3032 | bw 1.471 MB
+[ronde 02] VAL acc 0.6372 | prec 0.3489 | rec 0.5764 | F1 0.4340 | AUC 0.6587 | PR-AUC 0.3634 | bw 1.471 MB
+[ronde 03] VAL acc 0.6115 | prec 0.3444 | rec 0.6655 | F1 0.4532 | AUC 0.6741 | PR-AUC 0.3832 | bw 1.471 MB
+[ronde 04] VAL acc 0.6516 | prec 0.3690 | rec 0.6168 | F1 0.4610 | AUC 0.6837 | PR-AUC 0.3962 | bw 1.471 MB
+[ronde 05] VAL acc 0.6596 | prec 0.3732 | rec 0.6020 | F1 0.4603 | AUC 0.6907 | PR-AUC 0.4061 | bw 1.471 MB
+[ronde 06] VAL acc 0.6474 | prec 0.3675 | rec 0.6391 | F1 0.4662 | AUC 0.6979 | PR-AUC 0.4144 | bw 1.471 MB
+[ronde 07] VAL acc 0.6453 | prec 0.3681 | rec 0.6529 | F1 0.4703 | AUC 0.7021 | PR-AUC 0.4207 | bw 1.471 MB
+[ronde 08] VAL acc 0.6142 | prec 0.3546 | rec 0.7269 | F1 0.4763 | AUC 0.7060 | PR-AUC 0.4237 | bw 1.471 MB
+[ronde 09] VAL acc 0.6046 | prec 0.3526 | rec 0.7614 | F1 0.4817 | AUC 0.7123 | PR-AUC 0.4279 | bw 1.471 MB
+[ronde 10] VAL acc 0.6121 | prec 0.3579 | rec 0.7630 | F1 0.4870 | AUC 0.7173 | PR-AUC 0.4321 | bw 1.471 MB
+[server] algoritma agregasi: fedavg | seed: 3407
+[ronde 01] VAL acc 0.6728 | prec 0.2878 | rec 0.2444 | F1 0.2629 | AUC 0.5851 | PR-AUC 0.3036 | bw 1.471 MB
+[ronde 02] VAL acc 0.5789 | prec 0.3299 | rec 0.7162 | F1 0.4511 | AUC 0.6669 | PR-AUC 0.3777 | bw 1.471 MB
+[ronde 03] VAL acc 0.5785 | prec 0.3334 | rec 0.7423 | F1 0.4597 | AUC 0.6813 | PR-AUC 0.3903 | bw 1.471 MB
+[ronde 04] VAL acc 0.6266 | prec 0.3560 | rec 0.6702 | F1 0.4645 | AUC 0.6938 | PR-AUC 0.4023 | bw 1.471 MB
+[ronde 05] VAL acc 0.6333 | prec 0.3621 | rec 0.6766 | F1 0.4712 | AUC 0.7010 | PR-AUC 0.4120 | bw 1.471 MB
+[ronde 06] VAL acc 0.6534 | prec 0.3763 | rec 0.6595 | F1 0.4785 | AUC 0.7062 | PR-AUC 0.4199 | bw 1.471 MB
+[ronde 07] VAL acc 0.6481 | prec 0.3755 | rec 0.6867 | F1 0.4849 | AUC 0.7113 | PR-AUC 0.4214 | bw 1.471 MB
+[ronde 08] VAL acc 0.6039 | prec 0.3531 | rec 0.7638 | F1 0.4825 | AUC 0.7111 | PR-AUC 0.4215 | bw 1.471 MB
+[ronde 09] VAL acc 0.6304 | prec 0.3678 | rec 0.7295 | F1 0.4884 | AUC 0.7157 | PR-AUC 0.4282 | bw 1.471 MB
+[ronde 10] VAL acc 0.6154 | prec 0.3610 | rec 0.7625 | F1 0.4896 | AUC 0.7214 | PR-AUC 0.4331 | bw 1.471 MB
+[server] algoritma agregasi: fedprox | seed: 3407
+[ronde 01] VAL acc 0.7239 | prec 0.3191 | rec 0.1160 | F1 0.1678 | AUC 0.5637 | PR-AUC 0.2897 | bw 1.471 MB
+[ronde 02] VAL acc 0.6062 | prec 0.2853 | rec 0.4175 | F1 0.3378 | AUC 0.5717 | PR-AUC 0.2943 | bw 1.471 MB
+[ronde 03] VAL acc 0.5261 | prec 0.2823 | rec 0.6200 | F1 0.3875 | AUC 0.5816 | PR-AUC 0.3019 | bw 1.471 MB
+[ronde 04] VAL acc 0.5376 | prec 0.2844 | rec 0.6002 | F1 0.3855 | AUC 0.5959 | PR-AUC 0.3152 | bw 1.471 MB
+[ronde 05] VAL acc 0.5396 | prec 0.2925 | rec 0.6375 | F1 0.4006 | AUC 0.6292 | PR-AUC 0.3540 | bw 1.471 MB
+[ronde 06] VAL acc 0.6368 | prec 0.3560 | rec 0.6173 | F1 0.4510 | AUC 0.6722 | PR-AUC 0.3913 | bw 1.471 MB
+[ronde 07] VAL acc 0.5874 | prec 0.3376 | rec 0.7306 | F1 0.4612 | AUC 0.6833 | PR-AUC 0.3993 | bw 1.471 MB
+[ronde 08] VAL acc 0.6407 | prec 0.3653 | rec 0.6536 | F1 0.4680 | AUC 0.6936 | PR-AUC 0.4066 | bw 1.471 MB
+[ronde 09] VAL acc 0.6244 | prec 0.3571 | rec 0.6861 | F1 0.4689 | AUC 0.6965 | PR-AUC 0.4083 | bw 1.471 MB
+[ronde 10] VAL acc 0.6231 | prec 0.3580 | rec 0.7034 | F1 0.4739 | AUC 0.7052 | PR-AUC 0.4134 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.3 | seed: 3407
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 39=0.040, 23=0.070, 33=0.119, 13=0.074, 41=0.131, 29=0.127, 19=0.044, 10=0.133, 5=0.119, 54=0.143
+[ronde 01] VAL acc 0.7004 | prec 0.2955 | rec 0.1714 | F1 0.2144 | AUC 0.5855 | PR-AUC 0.3037 | bw 1.471 MB
+[ronde 02] bobot agregasi: 41=0.104, 13=0.094, 39=0.072, 29=0.123, 33=0.099, 10=0.095, 54=0.119, 5=0.112, 19=0.083, 23=0.098
+[ronde 02] VAL acc 0.6196 | prec 0.3379 | rec 0.5977 | F1 0.4314 | AUC 0.6502 | PR-AUC 0.3668 | bw 1.471 MB
+[ronde 03] bobot agregasi: 41=0.096, 10=0.091, 5=0.097, 13=0.101, 54=0.108, 19=0.104, 39=0.096, 23=0.104, 29=0.104, 33=0.099
+[ronde 03] VAL acc 0.5895 | prec 0.3374 | rec 0.7206 | F1 0.4591 | AUC 0.6772 | PR-AUC 0.3837 | bw 1.471 MB
+[ronde 04] bobot agregasi: 5=0.096, 13=0.105, 29=0.102, 41=0.094, 10=0.088, 54=0.101, 39=0.100, 33=0.099, 19=0.105, 23=0.110
+[ronde 04] VAL acc 0.6418 | prec 0.3634 | rec 0.6395 | F1 0.4630 | AUC 0.6882 | PR-AUC 0.3951 | bw 1.471 MB
+[ronde 05] bobot agregasi: 19=0.106, 54=0.103, 23=0.104, 13=0.103, 10=0.092, 29=0.102, 41=0.094, 39=0.103, 33=0.099, 5=0.095
+[ronde 05] VAL acc 0.6350 | prec 0.3604 | rec 0.6560 | F1 0.4647 | AUC 0.6955 | PR-AUC 0.4018 | bw 1.471 MB
+[ronde 06] bobot agregasi: 29=0.100, 54=0.102, 33=0.096, 19=0.106, 5=0.096, 41=0.093, 10=0.090, 39=0.106, 13=0.103, 23=0.108
+[ronde 06] VAL acc 0.6319 | prec 0.3616 | rec 0.6807 | F1 0.4718 | AUC 0.6999 | PR-AUC 0.4074 | bw 1.471 MB
+[ronde 07] bobot agregasi: 23=0.109, 13=0.104, 33=0.099, 19=0.106, 41=0.092, 29=0.100, 10=0.090, 39=0.104, 5=0.096, 54=0.100
+[ronde 07] VAL acc 0.6435 | prec 0.3692 | rec 0.6707 | F1 0.4758 | AUC 0.7038 | PR-AUC 0.4122 | bw 1.471 MB
+[ronde 08] bobot agregasi: 39=0.108, 10=0.089, 19=0.106, 29=0.097, 23=0.108, 41=0.092, 5=0.096, 54=0.100, 33=0.096, 13=0.107
+[ronde 08] VAL acc 0.6297 | prec 0.3632 | rec 0.7064 | F1 0.4794 | AUC 0.7063 | PR-AUC 0.4137 | bw 1.471 MB
+[ronde 09] bobot agregasi: 13=0.106, 29=0.094, 33=0.099, 5=0.099, 10=0.090, 19=0.107, 23=0.107, 39=0.104, 54=0.102, 41=0.091
+[ronde 09] VAL acc 0.6238 | prec 0.3601 | rec 0.7135 | F1 0.4782 | AUC 0.7076 | PR-AUC 0.4166 | bw 1.471 MB
+[ronde 10] bobot agregasi: 41=0.092, 19=0.110, 23=0.105, 39=0.110, 13=0.105, 5=0.095, 10=0.090, 33=0.095, 29=0.097, 54=0.100
+[ronde 10] VAL acc 0.5922 | prec 0.3461 | rec 0.7695 | F1 0.4771 | AUC 0.7093 | PR-AUC 0.4178 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0.5 | seed: 3407
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 10=0.108, 19=0.061, 29=0.122, 5=0.114, 41=0.110, 23=0.092, 54=0.130, 39=0.062, 13=0.090, 33=0.111
+[ronde 01] VAL acc 0.6937 | prec 0.2929 | rec 0.1916 | F1 0.2298 | AUC 0.5852 | PR-AUC 0.3044 | bw 1.471 MB
+[ronde 02] bobot agregasi: 5=0.104, 39=0.108, 41=0.087, 13=0.103, 54=0.108, 23=0.110, 33=0.091, 10=0.082, 19=0.096, 29=0.111
+[ronde 02] VAL acc 0.6463 | prec 0.3537 | rec 0.5588 | F1 0.4328 | AUC 0.6575 | PR-AUC 0.3733 | bw 1.471 MB
+[ronde 03] bobot agregasi: 54=0.101, 33=0.092, 5=0.095, 39=0.121, 19=0.110, 23=0.112, 10=0.078, 29=0.099, 41=0.084, 13=0.109
+[ronde 03] VAL acc 0.5930 | prec 0.3395 | rec 0.7192 | F1 0.4608 | AUC 0.6779 | PR-AUC 0.3844 | bw 1.471 MB
+[ronde 04] bobot agregasi: 13=0.110, 23=0.117, 5=0.093, 19=0.110, 29=0.098, 10=0.077, 54=0.097, 39=0.125, 33=0.092, 41=0.082
+[ronde 04] VAL acc 0.6405 | prec 0.3639 | rec 0.6486 | F1 0.4657 | AUC 0.6895 | PR-AUC 0.3977 | bw 1.471 MB
+[ronde 05] bobot agregasi: 13=0.108, 54=0.098, 19=0.110, 23=0.112, 29=0.097, 33=0.092, 5=0.092, 39=0.130, 41=0.082, 10=0.078
+[ronde 05] VAL acc 0.6333 | prec 0.3605 | rec 0.6656 | F1 0.4671 | AUC 0.6969 | PR-AUC 0.4052 | bw 1.471 MB
+[ronde 06] bobot agregasi: 10=0.078, 33=0.089, 39=0.130, 13=0.109, 23=0.117, 41=0.082, 19=0.110, 54=0.097, 5=0.092, 29=0.096
+[ronde 06] VAL acc 0.6396 | prec 0.3665 | rec 0.6703 | F1 0.4733 | AUC 0.7018 | PR-AUC 0.4117 | bw 1.471 MB
+[ronde 07] bobot agregasi: 19=0.111, 5=0.092, 41=0.082, 33=0.092, 10=0.078, 54=0.095, 29=0.097, 13=0.110, 39=0.128, 23=0.117
+[ronde 07] VAL acc 0.6425 | prec 0.3689 | rec 0.6744 | F1 0.4765 | AUC 0.7047 | PR-AUC 0.4146 | bw 1.471 MB
+[ronde 08] bobot agregasi: 33=0.090, 10=0.077, 19=0.112, 13=0.112, 29=0.093, 39=0.131, 23=0.116, 41=0.081, 5=0.093, 54=0.096
+[ronde 08] VAL acc 0.6270 | prec 0.3618 | rec 0.7105 | F1 0.4791 | AUC 0.7064 | PR-AUC 0.4155 | bw 1.471 MB
+[ronde 09] bobot agregasi: 23=0.114, 5=0.094, 29=0.093, 19=0.111, 10=0.077, 39=0.131, 54=0.097, 41=0.080, 33=0.092, 13=0.111
+[ronde 09] VAL acc 0.6209 | prec 0.3601 | rec 0.7289 | F1 0.4816 | AUC 0.7092 | PR-AUC 0.4191 | bw 1.471 MB
+[ronde 10] bobot agregasi: 19=0.113, 39=0.135, 33=0.089, 41=0.080, 54=0.095, 29=0.095, 5=0.092, 10=0.078, 23=0.114, 13=0.110
+[ronde 10] VAL acc 0.5993 | prec 0.3515 | rec 0.7743 | F1 0.4831 | AUC 0.7113 | PR-AUC 0.4223 | bw 1.471 MB
+[server] algoritma agregasi: fedpairwise_T0.01_d0 | seed: 3407
+[peringatan] FedCosinePairwise versi lama: use_delta diabaikan (similarity dihitung pada bobot penuh)
+[ronde 01] bobot agregasi: 13=0.051, 10=0.171, 23=0.046, 19=0.024, 29=0.128, 54=0.155, 33=0.125, 39=0.017, 41=0.161, 5=0.121
+[ronde 01] VAL acc 0.7144 | prec 0.3133 | rec 0.1488 | F1 0.1997 | AUC 0.5854 | PR-AUC 0.3035 | bw 1.471 MB
+[ronde 02] bobot agregasi: 10=0.120, 29=0.135, 54=0.133, 13=0.078, 5=0.127, 19=0.068, 41=0.122, 33=0.103, 39=0.042, 23=0.074
+[ronde 02] VAL acc 0.6595 | prec 0.3579 | rec 0.5155 | F1 0.4221 | AUC 0.6444 | PR-AUC 0.3612 | bw 1.471 MB
+[ronde 03] bobot agregasi: 19=0.093, 23=0.087, 13=0.090, 54=0.117, 33=0.104, 29=0.108, 5=0.106, 10=0.113, 41=0.117, 39=0.065
+[ronde 03] VAL acc 0.5897 | prec 0.3366 | rec 0.7150 | F1 0.4572 | AUC 0.6754 | PR-AUC 0.3835 | bw 1.471 MB
+[ronde 04] bobot agregasi: 41=0.113, 19=0.098, 33=0.107, 13=0.097, 5=0.102, 23=0.098, 54=0.106, 39=0.068, 29=0.104, 10=0.108
+[ronde 04] VAL acc 0.6373 | prec 0.3598 | rec 0.6405 | F1 0.4604 | AUC 0.6860 | PR-AUC 0.3928 | bw 1.471 MB
+[ronde 05] bobot agregasi: 13=0.094, 19=0.098, 41=0.112, 54=0.109, 10=0.113, 39=0.072, 33=0.108, 29=0.105, 23=0.090, 5=0.099
+[ronde 05] VAL acc 0.6334 | prec 0.3591 | rec 0.6550 | F1 0.4633 | AUC 0.6938 | PR-AUC 0.4001 | bw 1.471 MB
+[ronde 06] bobot agregasi: 29=0.101, 19=0.098, 5=0.099, 41=0.111, 23=0.095, 54=0.108, 33=0.104, 39=0.079, 10=0.110, 13=0.094
+[ronde 06] VAL acc 0.6291 | prec 0.3589 | rec 0.6768 | F1 0.4685 | AUC 0.6990 | PR-AUC 0.4061 | bw 1.471 MB
+[ronde 07] bobot agregasi: 19=0.099, 41=0.109, 13=0.094, 10=0.109, 29=0.104, 33=0.108, 5=0.098, 54=0.105, 23=0.098, 39=0.077
+[ronde 07] VAL acc 0.6496 | prec 0.3728 | rec 0.6591 | F1 0.4758 | AUC 0.7031 | PR-AUC 0.4121 | bw 1.471 MB
+[ronde 08] bobot agregasi: 13=0.097, 54=0.106, 5=0.098, 39=0.082, 23=0.096, 29=0.100, 10=0.109, 33=0.103, 19=0.099, 41=0.110
+[ronde 08] VAL acc 0.6189 | prec 0.3567 | rec 0.7177 | F1 0.4761 | AUC 0.7044 | PR-AUC 0.4117 | bw 1.471 MB
+[ronde 09] bobot agregasi: 33=0.106, 39=0.075, 23=0.097, 19=0.100, 10=0.110, 5=0.106, 41=0.108, 54=0.108, 13=0.095, 29=0.095
+[ronde 09] VAL acc 0.6195 | prec 0.3580 | rec 0.7223 | F1 0.4783 | AUC 0.7064 | PR-AUC 0.4159 | bw 1.471 MB
+[ronde 10] bobot agregasi: 10=0.112, 23=0.096, 5=0.100, 29=0.100, 13=0.093, 41=0.107, 54=0.106, 19=0.102, 39=0.081, 33=0.104
+[ronde 10] VAL acc 0.6100 | prec 0.3528 | rec 0.7335 | F1 0.4761 | AUC 0.7088 | PR-AUC 0.4190 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g3 | seed: 3407
+[ronde 01] VAL acc 0.6658 | prec 0.2969 | rec 0.2808 | F1 0.2875 | AUC 0.5839 | PR-AUC 0.3016 | bw 1.471 MB
+[ronde 02] VAL acc 0.6166 | prec 0.3473 | rec 0.6628 | F1 0.4552 | AUC 0.6716 | PR-AUC 0.3837 | bw 1.471 MB
+[ronde 03] VAL acc 0.5811 | prec 0.3349 | rec 0.7415 | F1 0.4610 | AUC 0.6853 | PR-AUC 0.3936 | bw 1.471 MB
+[ronde 04] VAL acc 0.6258 | prec 0.3563 | rec 0.6775 | F1 0.4666 | AUC 0.6968 | PR-AUC 0.4079 | bw 1.471 MB
+[ronde 05] VAL acc 0.6164 | prec 0.3533 | rec 0.7072 | F1 0.4709 | AUC 0.6992 | PR-AUC 0.4110 | bw 1.471 MB
+[ronde 06] VAL acc 0.6488 | prec 0.3737 | rec 0.6677 | F1 0.4787 | AUC 0.7064 | PR-AUC 0.4225 | bw 1.471 MB
+[ronde 07] VAL acc 0.6127 | prec 0.3561 | rec 0.7425 | F1 0.4810 | AUC 0.7118 | PR-AUC 0.4248 | bw 1.471 MB
+[ronde 08] VAL acc 0.6375 | prec 0.3684 | rec 0.6952 | F1 0.4812 | AUC 0.7151 | PR-AUC 0.4288 | bw 1.471 MB
+[ronde 09] VAL acc 0.6148 | prec 0.3599 | rec 0.7577 | F1 0.4876 | AUC 0.7171 | PR-AUC 0.4336 | bw 1.471 MB
+[ronde 10] VAL acc 0.6065 | prec 0.3550 | rec 0.7666 | F1 0.4849 | AUC 0.7200 | PR-AUC 0.4352 | bw 1.471 MB
+[server] algoritma agregasi: fedsim_g5 | seed: 3407
+[ronde 01] VAL acc 0.6723 | prec 0.2912 | rec 0.2510 | F1 0.2686 | AUC 0.5861 | PR-AUC 0.3034 | bw 1.471 MB
+[ronde 02] VAL acc 0.6195 | prec 0.3463 | rec 0.6428 | F1 0.4497 | AUC 0.6663 | PR-AUC 0.3793 | bw 1.471 MB
+[ronde 03] VAL acc 0.5987 | prec 0.3418 | rec 0.7110 | F1 0.4612 | AUC 0.6809 | PR-AUC 0.3890 | bw 1.471 MB
+[ronde 04] VAL acc 0.6311 | prec 0.3586 | rec 0.6633 | F1 0.4649 | AUC 0.6936 | PR-AUC 0.4032 | bw 1.471 MB
+[ronde 05] VAL acc 0.6281 | prec 0.3603 | rec 0.6948 | F1 0.4741 | AUC 0.7015 | PR-AUC 0.4135 | bw 1.471 MB
+[ronde 06] VAL acc 0.6627 | prec 0.3824 | rec 0.6417 | F1 0.4786 | AUC 0.7075 | PR-AUC 0.4233 | bw 1.471 MB
+[ronde 07] VAL acc 0.6359 | prec 0.3675 | rec 0.7007 | F1 0.4817 | AUC 0.7107 | PR-AUC 0.4211 | bw 1.471 MB
+[ronde 08] VAL acc 0.6090 | prec 0.3545 | rec 0.7508 | F1 0.4813 | AUC 0.7122 | PR-AUC 0.4240 | bw 1.471 MB
+[ronde 09] VAL acc 0.6379 | prec 0.3681 | rec 0.6919 | F1 0.4800 | AUC 0.7164 | PR-AUC 0.4296 | bw 1.471 MB
+[ronde 10] VAL acc 0.6083 | prec 0.3573 | rec 0.7736 | F1 0.4885 | AUC 0.7184 | PR-AUC 0.4329 | bw 1.471 MB
