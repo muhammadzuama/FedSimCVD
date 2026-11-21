@@ -1,21 +1,26 @@
 """
-label_reverser.py
------------------
+LabelReverse.py
+---------------
 Membalik label biner pada file train.csv dan val.csv: 0 -> 1 dan 1 -> 0.
+
+Nama folder client mengikuti SUFFIX:
+    SUFFIX = ""          -> state_53
+    SUFFIX = "sinatetic" -> state_53_sinatetic
 
 Cara pakai dari file lain:
 
-    from label_reverser import reverse_client_labels
+    from LabelReverse import reverse_client_labels, compare_outputs
 
     reverse_client_labels(
         clients_dir=r"C:\\...\\ScenarioMalacious\\ML2\\clientsMalacious_Selected",
-        label_col="label",
+        label_col="_michd",
+        output_dir=r"C:\\...\\ScenarioMalacious\\ML2\\clientsMalacious_Reverse",
     )
 
 Atau untuk satu file saja:
 
-    from label_reverser import reverse_csv_labels
-    reverse_csv_labels(r"C:\\...\\state_04\\train.csv", label_col="label")
+    from LabelReverse import reverse_csv_labels
+    reverse_csv_labels(r"C:\\...\\state_04\\train.csv", label_col="_michd")
 """
 
 from pathlib import Path
@@ -27,6 +32,13 @@ import pandas as pd
 DEFAULT_SPLITS = ("train", "val")
 DEFAULT_LABEL_COL = "label"
 MARKER_NAME = ".labels_reversed"  # penanda agar tidak ter-reverse dua kali
+SUFFIX = ""                       # "" -> state_53 | "sinatetic" -> state_53_sinatetic
+
+
+def state_folder(s: int, suffix: str = None) -> str:
+    """Nama folder untuk nomor state, contoh: 4 -> state_04 atau state_04_sinatetic."""
+    suffix = SUFFIX if suffix is None else suffix
+    return f"state_{s:02d}" + (f"_{suffix}" if suffix else "")
 
 
 def flip_labels(df: pd.DataFrame, label_col: str = DEFAULT_LABEL_COL) -> pd.DataFrame:
@@ -82,13 +94,15 @@ def reverse_csv_labels(
     return target
 
 
-def find_states(clients_dir) -> list:
-    """Cari semua folder state_XX di dalam clients_dir."""
+def find_states(clients_dir, suffix: str = None) -> list:
+    """Cari semua folder state_XX (atau state_XX_<suffix>) di dalam clients_dir."""
+    suffix = SUFFIX if suffix is None else suffix
+    pattern = rf"state_(\d+)_{re.escape(suffix)}" if suffix else r"state_(\d+)"
     clients_dir = Path(clients_dir)
     return sorted(
         int(m.group(1))
         for p in clients_dir.iterdir()
-        if p.is_dir() and (m := re.fullmatch(r"state_(\d+)", p.name))
+        if p.is_dir() and (m := re.fullmatch(pattern, p.name))
     )
 
 
@@ -104,7 +118,7 @@ def reverse_client_labels(
     """
     Balik label train.csv & val.csv untuk semua (atau sebagian) client.
 
-    clients_dir : folder berisi state_XX/
+    clients_dir : folder berisi state_XX/ (atau state_XX_<suffix>/)
     states      : list nomor state; None = semua state yang ada
     splits      : ("train", "val") -> mencari train.csv dan val.csv
     output_dir  : None = timpa file asli; isi path = simpan hasil ke folder baru
@@ -116,23 +130,27 @@ def reverse_client_labels(
         raise FileNotFoundError(f"Folder tidak ditemukan: {clients_dir}")
 
     states = find_states(clients_dir) if states is None else list(states)
+    if not states:
+        print(f"⚠️ Tidak ada folder state_XX{'_' + SUFFIX if SUFFIX else ''} di {clients_dir}")
+        return
+
     in_place = output_dir is None
     done = skipped = 0
 
     for s in states:
-        src_dir = clients_dir / f"state_{s:02d}"
+        src_dir = clients_dir / state_folder(s)
         if not src_dir.is_dir():
             print(f"⚠️ Folder tidak ada: {src_dir}")
             continue
 
         marker = src_dir / MARKER_NAME
         if in_place and marker.exists() and not force:
-            print(f"⏭️  state_{s:02d} sudah pernah di-reverse, dilewati (pakai force=True untuk memaksa)")
+            print(f"⏭️  {state_folder(s)} sudah pernah di-reverse, dilewati (pakai force=True untuk memaksa)")
             skipped += 1
             continue
 
-        print(f"state_{s:02d}")
-        dst_dir = src_dir if in_place else Path(output_dir) / f"state_{s:02d}"
+        print(state_folder(s))
+        dst_dir = src_dir if in_place else Path(output_dir) / state_folder(s)
 
         for split in splits:
             reverse_csv_labels(
@@ -173,7 +191,7 @@ def show_label_summary(
     rows = []
     for s in states:
         for split in splits:
-            path = clients_dir / f"state_{s:02d}" / f"{split}.csv"
+            path = clients_dir / state_folder(s) / f"{split}.csv"
             if not path.is_file():
                 continue
             bak = path.with_suffix(path.suffix + ".bak")
@@ -205,13 +223,18 @@ def compare_outputs(
     Cek juga bahwa setiap baris benar-benar terbalik labelnya.
     """
     original_dir, reversed_dir = Path(original_dir), Path(reversed_dir)
+    if not reversed_dir.is_dir():
+        raise FileNotFoundError(
+            f"Folder hasil reverse belum ada: {reversed_dir}. "
+            "Jalankan reverse_client_labels(..., output_dir=...) terlebih dahulu."
+        )
     states = find_states(reversed_dir) if states is None else list(states)
 
     rows = []
     for s in states:
         for split in splits:
-            a = original_dir / f"state_{s:02d}" / f"{split}.csv"
-            b = reversed_dir / f"state_{s:02d}" / f"{split}.csv"
+            a = original_dir / state_folder(s) / f"{split}.csv"
+            b = reversed_dir / state_folder(s) / f"{split}.csv"
             if not (a.is_file() and b.is_file()):
                 continue
             da, db = pd.read_csv(a), pd.read_csv(b)
@@ -234,11 +257,13 @@ def compare_outputs(
 
 if __name__ == "__main__":
     # Contoh pemakaian langsung: sesuaikan path dan nama kolom label.
-    CLIENTS_DIR = Path(
-        r"C:\Users\s2\Documents\FIXRKI\FIXbanget\ScenarioMalacious\ML2\clientsMalacious_Selected"
-    )
+    BASE = Path(r"C:\Users\s2\Documents\FIXRKI\FIXbanget\ScenarioMalacious\ML2")
+    CLIENTS_DIR = BASE / "clientsMalacious_Selected"
+    NEW_DIR = BASE / "clientsMalacious_Reverse"
+
     reverse_client_labels(
         clients_dir=CLIENTS_DIR,
-        label_col="label",   # ganti jika nama kolom labelnya berbeda
-        # output_dir=CLIENTS_DIR.parent / "clientsMalacious_Reversed",  # aktifkan jika tidak mau menimpa
+        label_col="_michd",
+        output_dir=NEW_DIR,   # hapus baris ini jika ingin menimpa file asli
     )
+    compare_outputs(CLIENTS_DIR, NEW_DIR, label_col="_michd")
